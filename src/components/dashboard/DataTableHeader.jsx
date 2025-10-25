@@ -10,7 +10,6 @@ const { Title, Text } = Typography;
 
 export default function DataHeader({ modul, subtitle, selectedData, onStore, onDeleteBatch, model, children, onImport, onExport }) {
   const { user } = useAuth();
-
   return (
     <>
       <div className="mb-6">
