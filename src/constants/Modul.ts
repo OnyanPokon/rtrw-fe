@@ -1,5 +1,6 @@
 enum Modul {
-  REGION = 'Wilayah'
+  REGION = 'Wilayah',
+  RTRW = 'RTRW'
 }
 
 export default Modul;

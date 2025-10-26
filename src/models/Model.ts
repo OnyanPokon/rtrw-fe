@@ -1,8 +1,9 @@
-type ModelKeys = 'wilayah';
+type ModelKeys = 'wilayah' | 'rtrw';
 
 export default abstract class Model {
   static children: { [key in ModelKeys]?: ModelChildren | ModelChildren[] } = {
-    wilayah: undefined
+    wilayah: undefined,
+    rtrw: undefined
   };
 }
 

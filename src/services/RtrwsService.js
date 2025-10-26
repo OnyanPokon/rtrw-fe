@@ -1,26 +1,26 @@
 /* eslint-disable no-unused-vars */
-import { {{model}} } from '@/models';
+import { Rtrws } from '@/models';
 import api from '@/utils/api';
 
-export default class {{name}} {
+export default class RtrwsService {
   /**
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
    *  status: boolean;
    *  message: string;
-   *  data?: {{model}}[];
+   *  data?: Rtrws[];
    * }>}
    * */
   static async getAll({ token, ...filters }) {
     const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
-    const response = await api.get('{{endpoint}}', {token});
-    if(!response.data) return response;
-    return { ...response, data: {{model}}.fromApiData(response.data)};
+    const response = await api.get('/rtrw', { token, params });
+    if (!response.data) return response;
+    return { ...response, data: Rtrws.fromApiData(response.data) };
   }
 
   /**
-   * @param {{{model}}} data
+   * @param {Rtrws} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -29,13 +29,20 @@ export default class {{name}} {
    *  errors?: { [key: string]: string[] };
    * }}
    */
-  static async store(data, token) {
-    return await api.post('{{endpoint}}', { body: {{model}}.toApiData(data), token });
+  static async store(data, token, file) {
+    const payload = {
+      body: Rtrws.toApiData(data),
+      token
+    };
+    if (file) {
+      payload.file = { dokumen_file: file };
+    }
+    return await api.post('/rtrw', { ...payload });
   }
 
   /**
    * @param {number} id
-   * @param {{{model}}} data
+   * @param {Rtrws} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -44,8 +51,8 @@ export default class {{name}} {
    *  errors?: { [key: string]: string[] };
    * }>}
    */
-  static async update(id, data, token) {
-    return await api.patch(`{{endpoint}}/edit/${id}`, { body: {{model}}.toApiData(data), token });
+  static async update(id, data, token, file) {
+    return await api.post(`/rtrw/${id}`, { body: Rtrws.toApiData(data), token, file: { dokumen_file: file } });
   }
 
   /**
@@ -58,7 +65,7 @@ export default class {{name}} {
    * }>}
    */
   static async delete(id, token) {
-    return await api.delete(`{{endpoint}}/delete/${id}`, { token });
+    return await api.delete(`/rtrw/${id}`, { token });
   }
 
   /**
@@ -71,6 +78,6 @@ export default class {{name}} {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`{{endpoint}}/multi-delete/?id=${ids.join(',')}`, { token });
+    return await api.delete(`/rtrw/multi-delete/?id=${ids.join(',')}`, { token });
   }
 }
