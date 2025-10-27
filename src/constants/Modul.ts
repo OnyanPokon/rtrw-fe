@@ -1,6 +1,7 @@
 enum Modul {
   REGION = 'Wilayah',
-  RTRW = 'RTRW'
+  RTRW = 'RTRW',
+  KLASIFIKASI = 'Klasifikasi'
 }
 
 export default Modul;

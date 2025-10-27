@@ -2,7 +2,7 @@ import { DataTable, DataTableHeader } from '@/components';
 import { Action } from '@/constants';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { RegionsService, RtrwsService } from '@/services';
-import { Card, Space } from 'antd';
+import { Card, Skeleton, Space } from 'antd';
 import { Rtrws as RtrwModel } from '@/models';
 import React from 'react';
 import { Delete, Edit } from '@/components/dashboard/button';
@@ -156,10 +156,12 @@ const Rtrws = () => {
 
   return (
     <Card>
-      <DataTableHeader onStore={onCreate} modul={Modul.RTRW} onDeleteBatch={onDeleteBatch} selectedData={selectedRegions} onSearch={(values) => setFilterValues({ search: values })} model={RtrwModel} />
-      <div className="w-full max-w-full overflow-x-auto">
-        <DataTable data={rtrws} columns={column} loading={getAllRtrws.isLoading} map={(registrant) => ({ key: registrant.id, ...registrant })} pagination={pagination} handleSelectedData={(_, selectedRows) => setSelectedRegions(selectedRows)} />
-      </div>
+      <Skeleton loading={getAllRtrws.isLoading}>
+        <DataTableHeader onStore={onCreate} modul={Modul.RTRW} onDeleteBatch={onDeleteBatch} selectedData={selectedRegions} onSearch={(values) => setFilterValues({ search: values })} model={RtrwModel} />
+        <div className="w-full max-w-full overflow-x-auto">
+          <DataTable data={rtrws} columns={column} loading={getAllRtrws.isLoading} map={(registrant) => ({ key: registrant.id, ...registrant })} pagination={pagination} handleSelectedData={(_, selectedRows) => setSelectedRegions(selectedRows)} />
+        </div>
+      </Skeleton>
     </Card>
   );
 };

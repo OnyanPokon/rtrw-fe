@@ -39,7 +39,8 @@ export const dashboardLink = [
     icon: RocketOutlined,
     children: [
       { path: '/region', label: 'Wilayah', element: Dashboard.Regions, permissions: [[Action.READ, Model.Regions]] },
-      { path: '/rtrw', label: 'RTRW', element: Dashboard.Rtrws, permissions: [[Action.READ, Model.Rtrws]] }
+      { path: '/rtrw', label: 'RTRW', element: Dashboard.Rtrws, permissions: [[Action.READ, Model.Rtrws]] },
+      { path: '/klasifikasi', label: 'Klasifikasi', element: Dashboard.Klasifikasi, permissions: [[Action.READ, Model.Rtrws]] }
     ]
   }
 ].map((item) => ({

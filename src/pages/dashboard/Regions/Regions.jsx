@@ -2,7 +2,7 @@ import { DataTable, DataTableHeader } from '@/components';
 import { Action } from '@/constants';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { RegionsService } from '@/services';
-import { Card, Space } from 'antd';
+import { Card, Skeleton, Space } from 'antd';
 import { Regions as RegionModel } from '@/models';
 import React from 'react';
 import { Delete, Edit } from '@/components/dashboard/button';
@@ -151,10 +151,12 @@ const Regions = () => {
 
   return (
     <Card>
-      <DataTableHeader onStore={onCreate} modul={Modul.REGION} onDeleteBatch={onDeleteBatch} selectedData={selectedRegions} onSearch={(values) => setFilterValues({ search: values })} model={RegionModel} />
-      <div className="w-full max-w-full overflow-x-auto">
-        <DataTable data={regions} columns={column} loading={getAllRegions.isLoading} map={(registrant) => ({ key: registrant.id, ...registrant })} pagination={pagination} handleSelectedData={(_, selectedRows) => setSelectedRegions(selectedRows)} />
-      </div>
+      <Skeleton loading={getAllRegions.isLoading}>
+        <DataTableHeader onStore={onCreate} modul={Modul.REGION} onDeleteBatch={onDeleteBatch} selectedData={selectedRegions} onSearch={(values) => setFilterValues({ search: values })} model={RegionModel} />
+        <div className="w-full max-w-full overflow-x-auto">
+          <DataTable data={regions} columns={column} loading={getAllRegions.isLoading} map={(registrant) => ({ key: registrant.id, ...registrant })} pagination={pagination} handleSelectedData={(_, selectedRows) => setSelectedRegions(selectedRows)} />
+        </div>
+      </Skeleton>
     </Card>
   );
 };
