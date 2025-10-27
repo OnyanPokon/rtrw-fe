@@ -76,7 +76,7 @@ const Klasifikasis = () => {
                   const { message, isSuccess } = await updateKlasifikasi.execute(record.id, values, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchRtrws({ token: token, page: pagination.page, per_page: pagination.per_page });
+                    fetchKlasifikasis({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -133,7 +133,7 @@ const Klasifikasis = () => {
                   const { isSuccess, message } = await deleteKlasifikasi.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchRtrws({ token: token, page: pagination.page, per_page: pagination.per_page });
+                    fetchKlasifikasis({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }

@@ -84,7 +84,7 @@ const Rtrws = () => {
                   const { message, isSuccess } = await updateRtrw.execute(record.id, { ...values, start_year: dateFormatter(values.start_year, 'year'), end_year: dateFormatter(values.end_year, 'year'), _method: 'PUT' }, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchRegions({ token: token, page: pagination.page, per_page: pagination.per_page });
+                    fetchRtrws({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -105,7 +105,7 @@ const Rtrws = () => {
                   const { isSuccess, message } = await deleteRtrw.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchRegions({ token: token, page: pagination.page, per_page: pagination.per_page });
+                    fetchRtrws({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }

@@ -1,26 +1,26 @@
 /* eslint-disable no-unused-vars */
-import { Klasifikasis } from '@/models';
+import { Polaruangs } from '@/models';
 import api from '@/utils/api';
 
-export default class KlasifikasisService {
+export default class PolaruangsService {
   /**
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
    *  status: boolean;
    *  message: string;
-   *  data?: Klasifikasis[];
+   *  data?: Polaruangs[];
    * }>}
    * */
   static async getAll({ token, ...filters }) {
     const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
-    const response = await api.get('/klasifikasi', { token, params });
+    const response = await api.get('/polaruang', { token, params });
     if (!response.data) return response;
-    return { ...response, data: Klasifikasis.fromApiData(response.data) };
+    return { ...response, data: Polaruangs.fromApiData(response.data) };
   }
 
   /**
-   * @param {Klasifikasis} data
+   * @param {Polaruangs} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -29,13 +29,13 @@ export default class KlasifikasisService {
    *  errors?: { [key: string]: string[] };
    * }}
    */
-  static async store(data, token) {
-    return await api.post('/klasifikasi', { body: Klasifikasis.toApiData(data), token });
+  static async store(data, token, file) {
+    return await api.post('/polaruang', { body: Polaruangs.toApiData(data), token, file: { geojson_file: file } });
   }
 
   /**
    * @param {number} id
-   * @param {Klasifikasis} data
+   * @param {Polaruangs} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -44,8 +44,8 @@ export default class KlasifikasisService {
    *  errors?: { [key: string]: string[] };
    * }>}
    */
-  static async update(id, data, token) {
-    return await api.put(`/klasifikasi/${id}`, { body: Klasifikasis.toApiData(data), token });
+  static async update(id, data, token, file) {
+    return await api.post(`/polaruang/${id}`, { body: Polaruangs.toApiData(data), token, file: { geojson_file: file } });
   }
 
   /**
@@ -58,7 +58,7 @@ export default class KlasifikasisService {
    * }>}
    */
   static async delete(id, token) {
-    return await api.delete(`/klasifikasi/${id}`, { token });
+    return await api.delete(`/polaruang/${id}`, { token });
   }
 
   /**
@@ -71,6 +71,6 @@ export default class KlasifikasisService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/klasifikasi/multi-delete/?id=${ids.join(',')}`, { token });
+    return await api.delete(`/polaruang/multi-delete/?id=${ids.join(',')}`, { token });
   }
 }
