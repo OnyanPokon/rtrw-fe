@@ -1,26 +1,26 @@
 /* eslint-disable no-unused-vars */
-import { Rtrws } from '@/models';
+import { Periodes } from '@/models';
 import api from '@/utils/api';
 
-export default class RtrwsService {
+export default class PeriodesService {
   /**
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
    *  status: boolean;
    *  message: string;
-   *  data?: Rtrws[];
+   *  data?: Periodes[];
    * }>}
    * */
-  static async getAll({ ...filters }) {
+  static async getAll({ token, ...filters }) {
     const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
-    const response = await api.get('/rtrw', { params });
+    const response = await api.get('/periode', { token });
     if (!response.data) return response;
-    return { ...response, data: Rtrws.fromApiData(response.data) };
+    return { ...response, data: Periodes.fromApiData(response.data) };
   }
 
   /**
-   * @param {Rtrws} data
+   * @param {Periodes} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -30,16 +30,12 @@ export default class RtrwsService {
    * }}
    */
   static async store(data, token) {
-    const payload = {
-      body: Rtrws.toApiData(data),
-      token
-    };
-    return await api.post('/rtrw', { ...payload });
+    return await api.post('/periode', { body: Periodes.toApiData(data), token });
   }
 
   /**
    * @param {number} id
-   * @param {Rtrws} data
+   * @param {Periodes} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -49,7 +45,7 @@ export default class RtrwsService {
    * }>}
    */
   static async update(id, data, token) {
-    return await api.post(`/rtrw/${id}`, { body: Rtrws.toApiData(data), token });
+    return await api.put(`/periode/${id}`, { body: Periodes.toApiData(data), token });
   }
 
   /**
@@ -62,7 +58,7 @@ export default class RtrwsService {
    * }>}
    */
   static async delete(id, token) {
-    return await api.delete(`/rtrw/${id}`, { token });
+    return await api.delete(`/periode/${id}`, { token });
   }
 
   /**
@@ -75,6 +71,6 @@ export default class RtrwsService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/rtrw/multi-delete/?id=${ids.join(',')}`, { token });
+    return await api.delete(`/periode/multi-delete/?id=${ids.join(',')}`, { token });
   }
 }

@@ -1,8 +1,13 @@
+import { ContentsSection, DefinitionSection, MainLayout, ObjectivesSection } from '@/components';
+import { heroData, rtrwContents, rtrwDefinition, rtrwObjectives } from '@/data/rtrwData';
+
 const Home = () => {
   return (
-    <>
-      <section className="mx-auto flex w-full max-w-screen-xl items-center justify-center gap-x-10 px-6 py-28 text-3xl">Wellcome</section>
-    </>
+    <MainLayout heroData={heroData}>
+      <DefinitionSection data={rtrwDefinition} />
+      <ObjectivesSection data={rtrwObjectives} />
+      <ContentsSection data={rtrwContents} />
+    </MainLayout>
   );
 };
 

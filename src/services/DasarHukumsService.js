@@ -1,26 +1,26 @@
 /* eslint-disable no-unused-vars */
-import { Rtrws } from '@/models';
+import { DasarHukums } from '@/models';
 import api from '@/utils/api';
 
-export default class RtrwsService {
+export default class DasarHukumsService {
   /**
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
    *  status: boolean;
    *  message: string;
-   *  data?: Rtrws[];
+   *  data?: DasarHukums[];
    * }>}
    * */
-  static async getAll({ ...filters }) {
+  static async getAll({ token, ...filters }) {
     const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
-    const response = await api.get('/rtrw', { params });
+    const response = await api.get('/dasar_hukum', { token, params });
     if (!response.data) return response;
-    return { ...response, data: Rtrws.fromApiData(response.data) };
+    return { ...response, data: DasarHukums.fromApiData(response.data) };
   }
 
   /**
-   * @param {Rtrws} data
+   * @param {DasarHukums} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -29,17 +29,13 @@ export default class RtrwsService {
    *  errors?: { [key: string]: string[] };
    * }}
    */
-  static async store(data, token) {
-    const payload = {
-      body: Rtrws.toApiData(data),
-      token
-    };
-    return await api.post('/rtrw', { ...payload });
+  static async store(data, token, file) {
+    return await api.post('/dasar_hukum', { body: DasarHukums.toApiData(data), token, file: { file_dokumen: file } });
   }
 
   /**
    * @param {number} id
-   * @param {Rtrws} data
+   * @param {DasarHukums} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -48,8 +44,8 @@ export default class RtrwsService {
    *  errors?: { [key: string]: string[] };
    * }>}
    */
-  static async update(id, data, token) {
-    return await api.post(`/rtrw/${id}`, { body: Rtrws.toApiData(data), token });
+  static async update(id, data, token, file) {
+    return await api.post(`/dasar_hukum/${id}`, { body: DasarHukums.toApiData(data), token, file: { file_dokumen: file } });
   }
 
   /**
@@ -62,7 +58,7 @@ export default class RtrwsService {
    * }>}
    */
   static async delete(id, token) {
-    return await api.delete(`/rtrw/${id}`, { token });
+    return await api.delete(`/dasar_hukum/${id}`, { token });
   }
 
   /**
@@ -75,6 +71,6 @@ export default class RtrwsService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/rtrw/multi-delete/?id=${ids.join(',')}`, { token });
+    return await api.delete(`/dasar_hukum/multi-delete/?id=${ids.join(',')}`, { token });
   }
 }

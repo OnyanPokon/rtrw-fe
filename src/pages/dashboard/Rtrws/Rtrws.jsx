@@ -1,15 +1,14 @@
 import { DataTable, DataTableHeader } from '@/components';
 import { Action } from '@/constants';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
-import { RegionsService, RtrwsService } from '@/services';
-import { Card, Skeleton, Space } from 'antd';
+import { DasarHukumsService, PeriodesService, RegionsService, RtrwsService } from '@/services';
+import { Button, Card, Skeleton, Space } from 'antd';
 import { Rtrws as RtrwModel } from '@/models';
 import React from 'react';
-import { Delete, Edit } from '@/components/dashboard/button';
+import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import Modul from '@/constants/Modul';
 import { formFields } from './FormFields';
-import dateFormatter from '@/utils/dateFormatter';
-import dayjs from 'dayjs';
+import { DownloadOutlined } from '@ant-design/icons';
 
 const { UPDATE, READ, DELETE } = Action;
 
@@ -19,6 +18,8 @@ const Rtrws = () => {
   const { success, error } = useNotification();
   const { execute, ...getAllRtrws } = useService(RtrwsService.getAll);
   const { execute: fetchRegions, ...getAllRegions } = useService(RegionsService.getAll);
+  const { execute: fetchPeriodes, ...getAllPeriodes } = useService(PeriodesService.getAll);
+  const { execute: fetchDasarHukums, ...getAllDasarHukums } = useService(DasarHukumsService.getAll);
   const storeRtrw = useService(RtrwsService.store);
   const updateRtrw = useService(RtrwsService.update);
   const deleteRtrw = useService(RtrwsService.delete);
@@ -31,20 +32,23 @@ const Rtrws = () => {
 
   const fetchRtrws = React.useCallback(() => {
     execute({
-      token: token,
       page: pagination.page,
       per_page: pagination.per_page,
       search: filterValues.search
     });
-  }, [execute, filterValues.search, pagination.page, pagination.per_page, token]);
+  }, [execute, filterValues.search, pagination.page, pagination.per_page]);
 
   React.useEffect(() => {
     fetchRtrws();
     fetchRegions({ token: token });
-  }, [fetchRegions, fetchRtrws, pagination.page, pagination.per_page, token]);
+    fetchDasarHukums({ token: token });
+    fetchPeriodes({ token: token });
+  }, [fetchDasarHukums, fetchPeriodes, fetchRegions, fetchRtrws, pagination.page, pagination.per_page, token]);
 
   const rtrws = getAllRtrws.data ?? [];
   const regions = getAllRegions.data ?? [];
+  const periodes = getAllPeriodes.data ?? [];
+  const dasarHukums = getAllDasarHukums.data ?? [];
 
   const column = [
     {
@@ -55,14 +59,14 @@ const Rtrws = () => {
     },
     {
       title: 'Tahun Mulai',
-      dataIndex: 'start_year',
-      sorter: (a, b) => a.start_year.length - b.start_year.length,
+      dataIndex: ['periode', 'year_start'],
+      sorter: (a, b) => a.periode.year_start.length - b.periode.year_start.length,
       searchable: true
     },
     {
-      title: 'Tahun Berakhir',
-      dataIndex: 'end_year',
-      sorter: (a, b) => a.end_year.length - b.end_year.length,
+      title: 'Tahun Akhir',
+      dataIndex: ['periode', 'year_end'],
+      sorter: (a, b) => a.periode.year_end.length - b.periode.year_end.length,
       searchable: true
     }
   ];
@@ -78,10 +82,10 @@ const Rtrws = () => {
             onClick={() => {
               modal.edit({
                 title: `Edit ${Modul.RTRW}`,
-                data: { ...record, start_year: dayjs(record.start_year), end_year: dayjs(record.end_year), region_id: record.region.id },
-                formFields: formFields({ options: { regions } }),
+                data: { ...record, region_id: record.region.id, periode_id: record.periode.id, dasar_hukum_id: record.dasar_hukum.id },
+                formFields: formFields({ options: { regions, periodes, dasarHukums } }),
                 onSubmit: async (values) => {
-                  const { message, isSuccess } = await updateRtrw.execute(record.id, { ...values, start_year: dateFormatter(values.start_year, 'year'), end_year: dateFormatter(values.end_year, 'year'), _method: 'PUT' }, token);
+                  const { message, isSuccess } = await updateRtrw.execute(record.id, values, token);
                   if (isSuccess) {
                     success('Berhasil', message);
                     fetchRtrws({ token: token, page: pagination.page, per_page: pagination.per_page });
@@ -93,14 +97,57 @@ const Rtrws = () => {
               });
             }}
           />
+          <Detail
+            title={`Detail ${Modul.RTRW}`}
+            model={RtrwModel}
+            onClick={() => {
+              modal.show.description({
+                title: record.name,
+                data: [
+                  {
+                    key: 'name',
+                    label: `Nama Klasifikasi`,
+                    children: record.name
+                  },
+                  {
+                    key: 'start_year',
+                    label: `Tahun Mulai`,
+                    children: record.periode.year_start
+                  },
+                  {
+                    key: 'end_year',
+                    label: `Tahun Akhir`,
+                    children: record.periode.year_end
+                  },
+                  {
+                    key: 'wilayah',
+                    label: `Nama Wilayah`,
+                    children: record.region.name
+                  },
+                  {
+                    key: 'deskripsi',
+                    label: `Deskripsi`,
+                    children: record.desc
+                  },
+                  {
+                    key: 'file_dokumen',
+                    label: `File Dokumen RTRW`,
+                    children: (
+                      <Button icon={<DownloadOutlined />} onClick={() => window.open(record.dasar_hukum.doc, '_blank')}>
+                        Download
+                      </Button>
+                    )
+                  }
+                ]
+              });
+            }}
+          />
           <Delete
             title={`Delete ${Modul.RTRW}`}
             model={RtrwModel}
             onClick={() => {
               modal.delete.default({
                 title: `Delete ${Modul.RTRW}`,
-                data: record,
-                formFields: formFields,
                 onSubmit: async () => {
                   const { isSuccess, message } = await deleteRtrw.execute(record.id, token);
                   if (isSuccess) {
@@ -122,9 +169,9 @@ const Rtrws = () => {
   const onCreate = () => {
     modal.create({
       title: `Tambah ${Modul.RTRW}`,
-      formFields: formFields({ options: { regions } }),
+      formFields: formFields({ options: { regions, periodes, dasarHukums } }),
       onSubmit: async (values) => {
-        const { message, isSuccess } = await storeRtrw.execute({ ...values, start_year: dateFormatter(values.start_year, 'year'), end_year: dateFormatter(values.end_year, 'year') }, token, values?.doc?.file ?? null);
+        const { message, isSuccess } = await storeRtrw.execute(values, token);
         if (isSuccess) {
           success('Berhasil', message);
           fetchRtrws({ token: token, page: pagination.page, per_page: pagination.per_page });

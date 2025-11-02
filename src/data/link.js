@@ -3,13 +3,18 @@ import * as Model from '@/models';
 import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
-import { DashboardOutlined, RocketOutlined } from '@ant-design/icons';
+import { DashboardOutlined, FileDoneOutlined, RocketOutlined } from '@ant-design/icons';
 
 export const landingLink = [
   {
     label: 'Beranda',
     key: '/',
     element: Landing.Home
+  },
+  {
+    label: 'Periode',
+    key: '/periode',
+    element: Landing.Periode
   }
 ];
 
@@ -35,13 +40,21 @@ export const dashboardLink = [
     children: [{ path: '/dashboard', label: 'Dashboard', element: Dashboard.Dashboard }]
   },
   {
+    label: 'Data RTRW',
+    icon: FileDoneOutlined,
+    children: [
+      { path: '/dashboard/region', label: 'Wilayah', element: Dashboard.Regions, permissions: [[Action.READ, Model.Regions]] },
+      { path: '/dashboard/periode', label: 'Periode', element: Dashboard.Periode, permissions: [[Action.READ, Model.Rtrws]] },
+      { path: '/dashboard/dasar_hukum', label: 'Dasar Hukum', element: Dashboard.DasarHukum, permissions: [[Action.READ, Model.Rtrws]] },
+      { path: '/dashboard/rtrw', label: 'RTRW', element: Dashboard.Rtrws, permissions: [[Action.READ, Model.Rtrws]] }
+    ]
+  },
+  {
     label: 'Master Data',
     icon: RocketOutlined,
     children: [
-      { path: '/region', label: 'Wilayah', element: Dashboard.Regions, permissions: [[Action.READ, Model.Regions]] },
-      { path: '/rtrw', label: 'RTRW', element: Dashboard.Rtrws, permissions: [[Action.READ, Model.Rtrws]] },
-      { path: '/klasifikasi', label: 'Klasifikasi', element: Dashboard.Klasifikasi, permissions: [[Action.READ, Model.Klasifikasis]] },
-      { path: '/polaruang', label: 'Polaruang', element: Dashboard.Polaruang, permissions: [[Action.READ, Model.Polaruangs]] }
+      { path: '/dashboard/klasifikasi', label: 'Klasifikasi', element: Dashboard.Klasifikasi, permissions: [[Action.READ, Model.Klasifikasis]] },
+      { path: '/dashboard/polaruang', label: 'Polaruang', element: Dashboard.Polaruang, permissions: [[Action.READ, Model.Polaruangs]] }
     ]
   }
 ].map((item) => ({

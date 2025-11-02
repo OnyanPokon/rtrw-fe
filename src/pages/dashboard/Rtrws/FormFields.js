@@ -15,34 +15,16 @@ export const formFields = ({ options }) => [
     size: 'large'
   },
   {
-    label: `Tahun mulai ${Modul.RTRW}`,
-    name: 'start_year',
-    type: InputType.DATE,
+    label: `Deskripsi ${Modul.RTRW}`,
+    name: 'desc',
+    type: InputType.LONGTEXT,
     rules: [
       {
         required: true,
-        message: `Tahun mulai ${Modul.RTRW} harus diisi`
+        message: `Deskripsi ${Modul.RTRW} harus diisi`
       }
     ],
-    size: 'large',
-    extra: {
-      picker: 'year'
-    }
-  },
-  {
-    label: `Tahun akhir ${Modul.RTRW}`,
-    name: 'end_year',
-    type: InputType.DATE,
-    rules: [
-      {
-        required: true,
-        message: `Tahun akhir ${Modul.RTRW} harus diisi`
-      }
-    ],
-    size: 'large',
-    extra: {
-      picker: 'year'
-    }
+    size: 'large'
   },
   {
     label: `Wilayah ${Modul.RTRW}`,
@@ -61,33 +43,35 @@ export const formFields = ({ options }) => [
     }))
   },
   {
-    label: `Deskripsi ${Modul.RTRW}`,
-    name: 'desc',
-    type: InputType.LONGTEXT,
+    label: `Periode ${Modul.RTRW}`,
+    name: 'periode_id',
+    type: InputType.SELECT,
     rules: [
       {
         required: true,
-        message: `Deskripsi ${Modul.RTRW} harus diisi`
+        message: `Periode ${Modul.RTRW} harus diisi`
       }
     ],
-    size: 'large'
+    size: 'large',
+    options: options.periodes.map((item) => ({
+      label: `${item.year_start} - ${item.year_end}`,
+      value: item.id
+    }))
   },
   {
-    label: `File Dokumen ${Modul.RTRW}`,
-    name: 'doc',
-    type: InputType.UPLOAD,
-    max: 1,
-    beforeUpload: () => {
-      return false;
-    },
-    getFileList: (data) => {
-      return [
-        {
-          url: data?.doc,
-          name: data?.name
-        }
-      ];
-    },
-    accept: ['.pdf']
+    label: `Dasar Hukum ${Modul.RTRW}`,
+    name: 'dasar_hukum_id',
+    type: InputType.SELECT,
+    rules: [
+      {
+        required: true,
+        message: `Dasar Hukum ${Modul.RTRW} harus diisi`
+      }
+    ],
+    size: 'large',
+    options: options.dasarHukums.map((item) => ({
+      label: item.name,
+      value: item.id
+    }))
   }
 ];

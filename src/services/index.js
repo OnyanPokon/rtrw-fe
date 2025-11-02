@@ -3,3 +3,5 @@ export { default as RegionsService } from './RegionsService';
 export { default as RtrwsService } from './RtrwsService';
 export { default as KlasifikasisService } from './KlasifikasisService';
 export { default as PolaruangsService } from './PolaruangsService';
+export { default as PeriodesService } from './PeriodesService';
+export { default as DasarHukumsService } from './DasarHukumsService';

@@ -5,3 +5,5 @@ export { default as Regions } from './Regions';
 export { default as Rtrws } from './Rtrws';
 export { default as Klasifikasis } from './Klasifikasis';
 export { default as Polaruangs } from './Polaruangs';
+export { default as Periodes } from './Periodes';
+export { default as DasarHukums } from './DasarHukums';

@@ -1,42 +1,42 @@
-import { DatatableColumn, FormField as FormFieldType, Override } from '@/types';
-import strings from '@/utils/strings';
-import { DescriptionsItemType } from 'antd/es/descriptions';
 import Model from './Model';
-import { InputType } from '@/constants';
+import asset from '@/utils/asset';
 
 export interface IncomingApiData {
   id: number;
   nama: string;
-  tahun_mulai: string;
-  tahun_akhir: string;
+  deskripsi: string;
   wilayah: {
     id: number;
     nama: string;
     tipe: string;
     kode_wilayah: string;
   };
-  deskripsi: string;
-  dokumen_file: string;
+  periode: {
+    id: number;
+    tahun_mulai: string;
+    tahun_akhir: string;
+  };
+  dasar_hukum: {
+    id: number;
+    nama: string;
+    file_dokumen: string;
+  };
 }
 
 export interface OutgoingApiData {
-  _method?: 'PUT';
   nama: string;
-  tahun_mulai: string;
-  tahun_akhir: string;
-  wilayah_id: number;
   deskripsi: string;
-  dokumen_file: string;
+  wilayah_id: number;
+  periode_id: number;
+  dasar_hukum_id: number;
 }
 
 interface FormValue {
-  _method?: 'PUT';
   name: string;
-  start_year: string;
-  end_year: string;
-  region_id: number;
   desc: string;
-  doc: string;
+  region_id: number;
+  periode_id: number;
+  dasar_hukum_id: number;
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -45,16 +45,23 @@ export default class Rtrws extends Model {
   constructor(
     public id: number,
     public name: string,
-    public start_year: string,
-    public end_year: string,
+    public desc: string,
     public region: {
       id: number;
       name: string;
       type: string;
       region_code: string;
     },
-    public desc: string,
-    public doc: string
+    public periode: {
+      id: number;
+      year_start: string;
+      year_end: string;
+    },
+    public dasar_hukum: {
+      id: number;
+      name: string;
+      doc: string;
+    }
   ) {
     super();
   }
@@ -64,29 +71,34 @@ export default class Rtrws extends Model {
     return new Rtrws(
       apiData.id,
       apiData.nama,
-      apiData.tahun_mulai,
-      apiData.tahun_akhir,
+      apiData.deskripsi,
       {
         id: apiData.wilayah.id,
         name: apiData.wilayah.nama,
         type: apiData.wilayah.tipe,
         region_code: apiData.wilayah.kode_wilayah
       },
-      apiData.deskripsi,
-      apiData.dokumen_file
+      {
+        id: apiData.periode.id,
+        year_start: apiData.periode.tahun_mulai,
+        year_end: apiData.periode.tahun_akhir
+      },
+      {
+        id: apiData.dasar_hukum.id,
+        name: apiData.dasar_hukum.nama,
+        doc: asset(apiData.dasar_hukum.file_dokumen)
+      }
     ) as ReturnType<T, IncomingApiData, Rtrws>;
   }
 
   public static toApiData<T extends FormValue | FormValue[]>(rtrws: T): ReturnType<T, FormValue, OutgoingApiData> {
     if (Array.isArray(rtrws)) return rtrws.map((object) => this.toApiData(object)) as ReturnType<T, FormValue, OutgoingApiData>;
     const apiData: OutgoingApiData = {
-      ...(rtrws._method ? { _method: rtrws._method } : {}),
       nama: rtrws.name,
-      tahun_mulai: rtrws.start_year,
-      tahun_akhir: rtrws.end_year,
-      wilayah_id: rtrws.region_id,
       deskripsi: rtrws.desc,
-      dokumen_file: rtrws.doc
+      periode_id: rtrws.periode_id,
+      wilayah_id: rtrws.region_id,
+      dasar_hukum_id: rtrws.dasar_hukum_id
     };
 
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;
