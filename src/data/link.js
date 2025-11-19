@@ -15,6 +15,11 @@ export const landingLink = [
     label: 'Periode',
     key: '/periode',
     element: Landing.Periode
+  },
+  {
+    label: 'Map',
+    key: '/map',
+    element: Landing.Maps
   }
 ];
 

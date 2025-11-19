@@ -14,9 +14,25 @@ export default class RtrwsService {
    * */
   static async getAll({ ...filters }) {
     const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
-    const response = await api.get('/rtrw', { params });
+    const response = await api.get('/rtrw', { token: null, params });
     if (!response.data) return response;
     return { ...response, data: Rtrws.fromApiData(response.data) };
+  }
+
+  /**
+   * @param {string} token
+   * @returns {Promise<{
+   *  code: HTTPStatusCode;
+   *  status: boolean;
+   *  message: string;
+   *  data?: Rtrws[];
+   * }>}
+   * */
+  static async getAllKlasifikasisByRtrw({ idRtrw, ...filters }) {
+    const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
+    const response = await api.get(`/rtrw/${idRtrw}/klasifikasi`, { params });
+    if (!response.data) return response;
+    return { ...response, data: response.data };
   }
 
   /**

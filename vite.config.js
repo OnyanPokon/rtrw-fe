@@ -13,5 +13,19 @@ export default defineConfig({
   },
   test: {
     environment: 'jsdom'
+  },
+  server: {
+    proxy: {
+      '/storage': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/api': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+      }
+    }
   }
 });
