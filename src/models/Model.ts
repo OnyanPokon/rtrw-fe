@@ -1,4 +1,4 @@
-type ModelKeys = 'wilayah' | 'rtrw' | 'klasifikasi' | 'polaruang' | 'periode' | 'dasar_hukum';
+type ModelKeys = 'wilayah' | 'rtrw' | 'klasifikasi' | 'polaruang' | 'periode' | 'dasar_hukum' | 'struktur_ruang';
 
 export default abstract class Model {
   static children: { [key in ModelKeys]?: ModelChildren | ModelChildren[] } = {
@@ -7,7 +7,8 @@ export default abstract class Model {
     klasifikasi: undefined,
     polaruang: undefined,
     periode: undefined,
-    dasar_hukum: undefined
+    dasar_hukum: undefined,
+    struktur_ruang: undefined
   };
 }
 

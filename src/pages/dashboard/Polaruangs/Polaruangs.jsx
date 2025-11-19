@@ -8,11 +8,13 @@ import { Delete, Edit } from '@/components/dashboard/button';
 import Modul from '@/constants/Modul';
 import { formFields } from './FormFields';
 import { Polaruangs as PolaruangModel } from '@/models';
+import { useParams } from 'react-router-dom';
 
 const { UPDATE, READ, DELETE } = Action;
 
 const Polaruangs = () => {
   const { token, user } = useAuth();
+  const params = useParams();
   const modal = useCrudModal();
   const { success, error } = useNotification();
   const { execute, ...getAllPolaruangs } = useService(PolaruangsService.getAll);
@@ -32,13 +34,14 @@ const Polaruangs = () => {
       token: token,
       page: pagination.page,
       per_page: pagination.per_page,
-      search: filterValues.search
+      search: filterValues.search,
+      ...(params.klasifikasi_id ? { klasifikasi_id: params.klasifikasi_id } : {})
     });
-  }, [execute, filterValues.search, pagination.page, pagination.per_page, token]);
+  }, [execute, filterValues.search, pagination.page, pagination.per_page, params.klasifikasi_id, token]);
 
   React.useEffect(() => {
     fetchPolaruangs();
-    fetchKlasifikasis({ token: token });
+    fetchKlasifikasis({ token: token, tipe: 'pola_ruang' });
   }, [fetchKlasifikasis, fetchPolaruangs, pagination.page, pagination.per_page, token]);
 
   const polaRuangs = getAllPolaruangs.data ?? [];

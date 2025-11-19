@@ -2,18 +2,21 @@ import { DataTable, DataTableHeader } from '@/components';
 import { Action } from '@/constants';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { KlasifikasisService, RtrwsService } from '@/services';
-import { Card, Skeleton, Space } from 'antd';
+import { Button, Card, Skeleton, Space } from 'antd';
 import { Klasifikasis as KlasifikasiModel } from '@/models';
 import React from 'react';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import Modul from '@/constants/Modul';
 import { formFields } from './FormFields';
+import { DatabaseOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 
 const { UPDATE, READ, DELETE } = Action;
 
 const Klasifikasis = () => {
   const { token, user } = useAuth();
   const modal = useCrudModal();
+  const navigate = useNavigate();
   const { success, error } = useNotification();
   const { execute, ...getAllKlasifikasis } = useService(KlasifikasisService.getAll);
   const { execute: fetchRtrws, ...getAllRtrws } = useService(RtrwsService.getAll);
@@ -55,6 +58,12 @@ const Klasifikasis = () => {
       title: 'RTRW',
       dataIndex: ['rtrw', 'name'],
       sorter: (a, b) => a.rtrw.name.length - b.rtrw.name.length,
+      searchable: true
+    },
+    {
+      title: 'Tipe Klasifikasi',
+      dataIndex: 'type',
+      sorter: (a, b) => a.type.length - b.type.length,
       searchable: true
     }
   ];
@@ -103,6 +112,11 @@ const Klasifikasis = () => {
                     children: record.desc
                   },
                   {
+                    key: 'type',
+                    label: `Deskripsi`,
+                    children: record.type
+                  },
+                  {
                     key: 'rtrw_name',
                     label: `RTRW`,
                     children: record.rtrw.name
@@ -140,6 +154,18 @@ const Klasifikasis = () => {
                   return isSuccess;
                 }
               });
+            }}
+          />
+          <Button
+            icon={<DatabaseOutlined />}
+            variant="outlined"
+            color="primary"
+            onClick={() => {
+              if (record.type === 'pola_ruang') {
+                navigate('/dashboard/polaruang/' + record.id);
+              } else {
+                navigate('/dashboard/struktur_ruang/' + record.id);
+              }
             }}
           />
         </Space>

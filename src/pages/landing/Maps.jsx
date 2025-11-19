@@ -8,6 +8,8 @@ import { Button, Checkbox, Collapse, Form, Select, Skeleton, Typography } from '
 import React from 'react';
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
+import L from 'leaflet';
+import { getLeafletIcon } from '@/utils/leafletIcon';
 
 const Maps = () => {
   const navigate = useNavigate();
@@ -16,7 +18,8 @@ const Maps = () => {
   const klasifikasisByRtrw = useService(RtrwsService.getAllKlasifikasisByRtrw);
   const [selectedLayers, setSelectedLayers] = React.useState({});
   const [loadingLayers, setLoadingLayers] = React.useState({});
-  const [treeData, setTreeData] = React.useState([]);
+  const [treePolaRuangData, setTreePolaRuangData] = React.useState([]);
+  const [treeStrukturRuangData, setTreeStrukturRuangData] = React.useState([]);
 
   const fetchRtrws = React.useCallback(() => {
     execute({ page: 1, per_page: 100000 });
@@ -29,40 +32,91 @@ const Maps = () => {
   const rtrws = getAllRtrws.data ?? [];
 
   const handleToggleLayer = async (pemetaan) => {
-    const id = pemetaan.key;
+    const key = pemetaan.key;
+    const id = pemetaan.id;
+    const type = pemetaan.type;
 
-    if (selectedLayers[id]) {
+    if (selectedLayers[key]) {
       const updated = { ...selectedLayers };
-      delete updated[id];
+      delete updated[key];
       setSelectedLayers(updated);
       return;
     }
 
-    setLoadingLayers((prev) => ({ ...prev, [id]: true }));
+    setLoadingLayers((prev) => ({ ...prev, [key]: true }));
 
     try {
-      const res = await fetch(BASE_URL + `/polaruang/${id}/geojson`);
+      let url = '';
+      if (type === 'pola') url = `${BASE_URL}/polaruang/${id}/geojson`;
+      else if (type === 'struktur') url = `${BASE_URL}/struktur_ruang/${id}/geojson`;
+
+      const res = await fetch(url);
       const json = await res.json();
+      const warna = pemetaan.warna ?? null;
+      const iconName = pemetaan.icon_titik ?? null;
+      const tipe_garis = pemetaan.tipe_garis ?? null;
+
+      const enhanced = {
+        ...json,
+        features: (json.features || []).map((feature) => {
+          const props = { ...(feature.properties || {}) };
+          if (iconName) props.icon = iconName;
+          if (warna) {
+            props.stroke = warna;
+            props['stroke-width'] = props['stroke-width'] ?? 3;
+            props['stroke-opacity'] = props['stroke-opacity'] ?? 1;
+            props.fill = props.fill ?? warna;
+            props['fill-opacity'] = props['fill-opacity'] ?? 0.2;
+          }
+          if (tipe_garis === 'dashed') {
+            props.dashArray = props.dashArray ?? '6 6';
+          } else if (tipe_garis === 'solid') {
+            props.dashArray = null;
+          }
+
+          return {
+            ...feature,
+            properties: props
+          };
+        })
+      };
 
       setSelectedLayers((prev) => ({
         ...prev,
-        [id]: { id, data: json }
+        [key]: { id, type, data: enhanced, meta: pemetaan }
       }));
     } catch (e) {
       console.error('Gagal mengambil GeoJSON:', e);
     } finally {
-      setLoadingLayers((prev) => ({ ...prev, [id]: false }));
+      setLoadingLayers((prev) => ({ ...prev, [key]: false }));
     }
   };
 
-  function mapKlasifikasiToTreeData(data) {
+  function mapPolaRuang(data) {
     return data.map((klasifikasi) => ({
       title: klasifikasi.nama,
-      key: klasifikasi.id,
+      key: `pola-root-${klasifikasi.id}`,
       children: (klasifikasi.pola_ruang || []).map((pola) => ({
+        ...pola,
+        type: 'pola',
         title: pola.nama,
-        key: pola.id,
+        key: `pola-${pola.id}`, // ← Unik
         geojson_file: asset(pola.geojson_file),
+        isLeaf: true
+      }))
+    }));
+  }
+
+  function mapStrukturRuang(data) {
+    return data.map((klasifikasi) => ({
+      title: klasifikasi.nama,
+      key: `struktur-root-${klasifikasi.id}`,
+      children: (klasifikasi.struktur_ruang || []).map((struktur) => ({
+        ...struktur,
+        type: 'struktur',
+        title: struktur.nama,
+        key: `struktur-${struktur.id}`,
+        geojson_file: asset(struktur.geojson_file),
         isLeaf: true
       }))
     }));
@@ -76,9 +130,11 @@ const Maps = () => {
     if (isSuccess) {
       success('Berhasil', message);
 
-      const klasifikasiList = data.klasifikasis ?? [];
+      const pola_ruang_list = data.klasifikasi_pola_ruang ?? [];
+      const struktur_ruang_list = data.klasifikasi_struktur_ruang ?? [];
 
-      setTreeData(mapKlasifikasiToTreeData(klasifikasiList));
+      setTreePolaRuangData(mapPolaRuang(pola_ruang_list));
+      setTreeStrukturRuangData(mapStrukturRuang(struktur_ruang_list));
     } else {
       error('Gagal', message);
     }
@@ -87,23 +143,26 @@ const Maps = () => {
   };
 
   const getFeatureStyle = (feature) => {
-    const props = feature.properties;
-    if (!props.fill) {
-      return {
-        color: '#0000ff',
-        weight: 3,
-        fillOpacity: 0.3,
-        fillColor: '#ffffff'
-      };
-    }
+    const props = feature.properties || {};
 
-    return {
-      color: props.stroke,
-      weight: props['stroke-width'],
-      opacity: props['stroke-opacity'],
-      fillColor: props.fill,
-      fillOpacity: props['fill-opacity']
+    const stroke = props.stroke || '#0000ff';
+    const weight = props['stroke-width'] ?? 3;
+    const opacity = props['stroke-opacity'] ?? 1;
+    const fillColor = props.fill ?? '#ffffff';
+    const fillOpacity = props['fill-opacity'] ?? 0.2;
+    const dashArray = props.dashArray || props['stroke-dasharray'] || null;
+
+    const style = {
+      color: stroke,
+      weight,
+      opacity,
+      fillColor,
+      fillOpacity
     };
+
+    if (dashArray) style.dashArray = dashArray;
+
+    return style;
   };
 
   return (
@@ -112,7 +171,35 @@ const Maps = () => {
         <MapContainer center={[0.5412, 123.0595]} zoom={9} className="h-screen w-full">
           <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           {Object.values(selectedLayers).map((layer) => (
-            <GeoJSON key={layer.id} data={layer.data} style={getFeatureStyle} />
+            <GeoJSON
+              key={`${layer.type}-${layer.id}`}
+              data={layer.data}
+              style={getFeatureStyle}
+              pointToLayer={(feature, latlng) => {
+                const iconName = feature.properties?.icon;
+                const color = feature.properties?.stroke || feature.properties?.fill || '#1677ff';
+                const leafletIcon = iconName ? getLeafletIcon(iconName, color) : undefined;
+                if (leafletIcon) return L.marker(latlng, { icon: leafletIcon });
+                return L.marker(latlng);
+              }}
+              onEachFeature={(feature, layerGeo) => {
+                const name = feature.properties?.nama || feature.properties?.title || '';
+                if (name) {
+                  layerGeo.bindPopup(`<strong>${name}</strong>`);
+                }
+                const iconName = feature.properties?.icon;
+                if (iconName && feature.geometry && feature.geometry.type !== 'Point') {
+                  const color = feature.properties?.stroke || '#1677ff';
+                  const leafletIcon = getLeafletIcon(iconName, color);
+                  try {
+                    const latlng = layerGeo.getBounds().getCenter();
+                    L.marker(latlng, { icon: leafletIcon }).addTo(layerGeo._map);
+                  } catch (err) {
+                    console.warn(err);
+                  }
+                }
+              }}
+            />
           ))}
         </MapContainer>
       </div>
@@ -187,10 +274,10 @@ const Maps = () => {
             </div>
           </div>
         ) : (
-          <div className="flex flex-col gap-y-8">
-            {treeData.map((item) => (
+          <div className="flex flex-col">
+            {treePolaRuangData.map((item) => (
               <div key={item.key} className="flex flex-col gap-y-2">
-                <div className="mt-4 flex flex-col gap-y-4">
+                <div className="mt-2 flex flex-col gap-y-4">
                   <Collapse ghost expandIcon={() => ''}>
                     <Collapse.Panel
                       header={
@@ -212,33 +299,39 @@ const Maps = () => {
                               {pemetaan.title}
 
                               {loadingLayers[pemetaan.key] && <span className="h-3 w-3 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></span>}
-                              {/* <Button
-                                icon={<InfoCircleOutlined />}
-                                type='link'
-                                onClick={() => {
-                                  modal.show.description({
-                                    title: pemetaan.nama_pemetaan,
-                                    data: [
-                                      {
-                                        key: 'name',
-                                        label: `Nama Pemetaan`,
-                                        children: pemetaan.nama_pemetaan
-                                      },
-                                      {
-                                        key: 'name',
-                                        label: `Deskripsi`,
-                                        children: pemetaan.deskripsi
-                                      },
-                                      {
-                                        key: 'jenis',
-                                        label: `Jenis`,
-                                        children: pemetaan.jenis
-                                      },
+                            </span>
+                          </Checkbox>
+                        ))}
+                      </div>
+                    </Collapse.Panel>
+                  </Collapse>
+                </div>
+              </div>
+            ))}
+            {treeStrukturRuangData.map((item) => (
+              <div key={item.key} className="flex flex-col gap-y-2">
+                <div className="mt-2 flex flex-col gap-y-4">
+                  <Collapse ghost expandIcon={() => ''}>
+                    <Collapse.Panel
+                      header={
+                        <div className="inline-flex w-full items-center justify-between">
+                          <div className="inline-flex w-full items-center gap-x-4">
+                            <div className="flex items-center justify-center rounded-md bg-blue-100 p-3">
+                              <AimOutlined className="text-blue-500" />
+                            </div>
+                            {item.title}
+                          </div>
+                          <MenuOutlined />
+                        </div>
+                      }
+                    >
+                      <div className="flex flex-col gap-y-2 px-4">
+                        {item.children.map((pemetaan) => (
+                          <Checkbox key={pemetaan.key} onChange={() => handleToggleLayer(pemetaan)}>
+                            <span className="inline-flex items-center gap-x-2">
+                              {pemetaan.title}
 
-                                    ]
-                                  });
-                                }}
-                              /> */}
+                              {loadingLayers[pemetaan.key] && <span className="h-3 w-3 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></span>}
                             </span>
                           </Checkbox>
                         ))}

@@ -41,5 +41,27 @@ export const formFields = ({ options }) => [
       label: item.name,
       value: item.id
     }))
+  },
+  {
+    label: `Tipe ${Modul.KLASIFIKASI}`,
+    name: 'type',
+    type: InputType.SELECT,
+    rules: [
+      {
+        required: true,
+        message: `Tipe ${Modul.KLASIFIKASI} harus diisi`
+      }
+    ],
+    size: 'large',
+    options: [
+      {
+        label: 'Pola Ruang',
+        value: 'pola_ruang'
+      },
+      {
+        label: 'Struktur Ruang',
+        value: 'struktur_ruang'
+      }
+    ]
   }
 ];

@@ -2,14 +2,15 @@ import { CrudModalType, InputType } from '@/constants';
 import clientAsset from '@/utils/clientAsset';
 import strings from '@/utils/strings';
 import { DeleteOutlined, InboxOutlined } from '@ant-design/icons';
-import { Button, DatePicker, Form, Input, InputNumber, Modal } from 'antd';
+import { Button, DatePicker, Form, Input, InputNumber, Modal, Select as AntdSelect } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Dragger from 'antd/es/upload/Dragger';
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MapPicker, Select } from './input';
 import { debounce } from 'lodash';
 import { useAuth } from '@/hooks';
+import * as Icons from '@ant-design/icons';
 
 /**
  * @param {{
@@ -17,6 +18,7 @@ import { useAuth } from '@/hooks';
  * }} props
  * @returns
  */
+
 export default function CrudModal({ isModalOpen, data: initialData, close, title, formFields, onSubmit, onChange = () => {}, type = CrudModalType.SHOW, isLoading, ...props }) {
   const { token } = useAuth();
   const [form] = Form.useForm();
@@ -68,6 +70,10 @@ export default function CrudModal({ isModalOpen, data: initialData, close, title
     }
   }, [isModalOpen]);
 
+  const iconNames = React.useMemo(() => {
+    return Object.keys(Icons).filter((name) => name.endsWith('Outlined'));
+  }, []);
+
   /**
    * @param {import('@/types/FormField').default} field
    * @returns
@@ -105,6 +111,23 @@ export default function CrudModal({ isModalOpen, data: initialData, close, title
 
       case InputType.SELECT_FETCH:
         return <Select showSearch placeholder={`Cari ${field.label}`} filterOption={false} onSearch={(value) => handleSearch(value, field)} options={searchOptions} />;
+
+      case InputType.SELECT_ICON:
+        return (
+          <AntdSelect showSearch placeholder="Pilih ikon" style={{ width: '100%' }} optionLabelProp="label" size="large" dropdownStyle={{ maxHeight: 300, overflowY: 'auto' }} virtual={false}>
+            {iconNames.map((name) => {
+              const IconComp = Icons[name];
+              return (
+                <AntdSelect.Option key={name} value={name} label={name}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <IconComp />
+                    {name}
+                  </div>
+                </AntdSelect.Option>
+              );
+            })}
+          </AntdSelect>
+        );
 
       case InputType.SELECT_LOGO:
         return (

@@ -59,7 +59,8 @@ export const dashboardLink = [
     icon: RocketOutlined,
     children: [
       { path: '/dashboard/klasifikasi', label: 'Klasifikasi', element: Dashboard.Klasifikasi, permissions: [[Action.READ, Model.Klasifikasis]] },
-      { path: '/dashboard/polaruang', label: 'Polaruang', element: Dashboard.Polaruang, permissions: [[Action.READ, Model.Polaruangs]] }
+      { path: '/dashboard/polaruang', label: 'Polaruang', element: Dashboard.Polaruang, permissions: [[Action.READ, Model.Polaruangs]] },
+      { path: '/dashboard/struktur_ruang', label: 'Struktur Ruang', element: Dashboard.StrukturRuang }
     ]
   }
 ].map((item) => ({

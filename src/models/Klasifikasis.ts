@@ -17,18 +17,21 @@ export interface IncomingApiData {
   };
   nama: string;
   deskripsi: string;
+  tipe: 'pola_ruang' | 'struktur_ruang';
 }
 
 export interface OutgoingApiData {
   nama: string;
   deskripsi: string;
   rtrw_id: number;
+  tipe: 'pola_ruang' | 'struktur_ruang';
 }
 
 interface FormValue {
   name: string;
   desc: string;
   rtrw_id: number;
+  type: 'pola_ruang' | 'struktur_ruang';
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -50,7 +53,8 @@ export default class Klasifikasis extends Model {
       };
     },
     public name: string,
-    public desc: string
+    public desc: string,
+    public type: 'pola_ruang' | 'struktur_ruang'
   ) {
     super();
   }
@@ -73,7 +77,8 @@ export default class Klasifikasis extends Model {
         }
       },
       apiData.nama,
-      apiData.deskripsi
+      apiData.deskripsi,
+      apiData.tipe
     ) as ReturnType<T, IncomingApiData, Klasifikasis>;
   }
 
@@ -82,7 +87,8 @@ export default class Klasifikasis extends Model {
     const apiData: OutgoingApiData = {
       nama: klasifikasis.name,
       deskripsi: klasifikasis.desc,
-      rtrw_id: klasifikasis.rtrw_id
+      rtrw_id: klasifikasis.rtrw_id,
+      tipe: klasifikasis.type
     };
 
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;

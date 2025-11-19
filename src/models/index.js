@@ -7,3 +7,4 @@ export { default as Klasifikasis } from './Klasifikasis';
 export { default as Polaruangs } from './Polaruangs';
 export { default as Periodes } from './Periodes';
 export { default as DasarHukums } from './DasarHukums';
+export { default as StrukturRuangs } from './StrukturRuangs';
