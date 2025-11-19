@@ -113,7 +113,7 @@ const Klasifikasis = () => {
                   },
                   {
                     key: 'type',
-                    label: `Deskripsi`,
+                    label: `Tipe`,
                     children: record.type
                   },
                   {
@@ -124,17 +124,18 @@ const Klasifikasis = () => {
                   {
                     key: 'rtrw_start',
                     label: `Tahun Mulai RTRW`,
-                    children: record.rtrw.start_year
+                    children: record.rtrw.periode.year_start
                   },
                   {
                     key: 'rtrw_end',
                     label: `Tahun Akhir RTRW`,
-                    children: record.rtrw.end_year
+                    children: record.rtrw.periode.year_end
                   }
                 ]
               });
             }}
           />
+
           <Delete
             title={`Delete ${Modul.KLASIFIKASI}`}
             model={KlasifikasiModel}
@@ -156,6 +157,7 @@ const Klasifikasis = () => {
               });
             }}
           />
+
           <Button
             icon={<DatabaseOutlined />}
             variant="outlined"

@@ -4,7 +4,7 @@ import { useAuth, useCrudModal, useNotification, usePagination, useService } fro
 import { KlasifikasisService, StrukturRuangsService } from '@/services';
 import { Card, Skeleton, Space } from 'antd';
 import React from 'react';
-import { Delete, Edit } from '@/components/dashboard/button';
+import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import Modul from '@/constants/Modul';
 import { StrukturRuangs as StrukturRuangModel } from '@/models';
 import { EnvironmentOutlined, ExpandAltOutlined } from '@ant-design/icons';
@@ -120,6 +120,42 @@ const StrukturRuangs = () => {
               });
             }}
           />
+          <Detail
+            title={`Detail ${Modul.STRUKTUR}`}
+            model={StrukturRuangModel}
+            onClick={() => {
+              modal.show.description({
+                title: record.name,
+                data: [
+                  {
+                    key: 'name',
+                    label: `Nama Struktur Ruang`,
+                    children: record.name
+                  },
+                  {
+                    key: 'desc',
+                    label: `Deskripsi`,
+                    children: record.desc
+                  },
+                  {
+                    key: 'name',
+                    label: `Nama Klasifikasi`,
+                    children: record.klasifikasi.name
+                  },
+                  {
+                    key: 'desc',
+                    label: `Deskripsi Klasifikasi`,
+                    children: record.klasifikasi.desc
+                  },
+                  {
+                    key: 'type',
+                    label: `Tipe Klasifikasi`,
+                    children: record.klasifikasi.type
+                  }
+                ]
+              });
+            }}
+          />
           <Delete
             title={`Delete ${Modul.STRUKTUR}`}
             model={StrukturRuangModel}
@@ -127,7 +163,6 @@ const StrukturRuangs = () => {
               modal.delete.default({
                 title: `Delete ${Modul.STRUKTUR}`,
                 data: record,
-                formFields: formFields,
                 onSubmit: async () => {
                   const { isSuccess, message } = await deleteStrukturRuang.execute(record.id, token);
                   if (isSuccess) {

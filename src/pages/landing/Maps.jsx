@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
-import { useNotification, useService } from '@/hooks';
+import { useCrudModal, useNotification, useService } from '@/hooks';
 import { RtrwsService } from '@/services';
 import { BASE_URL } from '@/utils/api';
 import asset from '@/utils/asset';
-import { AimOutlined, MenuOutlined } from '@ant-design/icons';
+import { AimOutlined, InfoCircleOutlined, MenuOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Collapse, Form, Select, Skeleton, Typography } from 'antd';
 import React from 'react';
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
@@ -14,6 +14,7 @@ import { getLeafletIcon } from '@/utils/leafletIcon';
 const Maps = () => {
   const navigate = useNavigate();
   const { success, error } = useNotification();
+  const modal = useCrudModal();
   const { execute, ...getAllRtrws } = useService(RtrwsService.getAll);
   const klasifikasisByRtrw = useService(RtrwsService.getAllKlasifikasisByRtrw);
   const [selectedLayers, setSelectedLayers] = React.useState({});
@@ -299,6 +300,27 @@ const Maps = () => {
                               {pemetaan.title}
 
                               {loadingLayers[pemetaan.key] && <span className="h-3 w-3 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></span>}
+                              <Button
+                                icon={<InfoCircleOutlined />}
+                                type="link"
+                                onClick={() => {
+                                  modal.show.description({
+                                    title: pemetaan.nama,
+                                    data: [
+                                      {
+                                        key: 'name',
+                                        label: `Nama Polaruang`,
+                                        children: pemetaan.nama
+                                      },
+                                      {
+                                        key: 'desc',
+                                        label: `Deskripsi`,
+                                        children: pemetaan.deskripsi
+                                      }
+                                    ]
+                                  });
+                                }}
+                              />
                             </span>
                           </Checkbox>
                         ))}
@@ -333,6 +355,28 @@ const Maps = () => {
 
                               {loadingLayers[pemetaan.key] && <span className="h-3 w-3 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></span>}
                             </span>
+
+                            <Button
+                              icon={<InfoCircleOutlined />}
+                              type="link"
+                              onClick={() => {
+                                modal.show.description({
+                                  title: pemetaan.nama,
+                                  data: [
+                                    {
+                                      key: 'name',
+                                      label: `Nama Struktur Ruang`,
+                                      children: pemetaan.nama
+                                    },
+                                    {
+                                      key: 'desc',
+                                      label: `Deskripsi`,
+                                      children: pemetaan.deskripsi
+                                    }
+                                  ]
+                                });
+                              }}
+                            />
                           </Checkbox>
                         ))}
                       </div>

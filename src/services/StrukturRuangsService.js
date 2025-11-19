@@ -58,7 +58,7 @@ export default class StrukturRuangsService {
    * }>}
    */
   static async delete(id, token) {
-    return await api.delete(`/struktur_ruang/delete/${id}`, { token });
+    return await api.delete(`/struktur_ruang/${id}`, { token });
   }
 
   /**

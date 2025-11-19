@@ -5,8 +5,11 @@ export interface IncomingApiData {
   rtrw: {
     id: number;
     nama: string;
-    tahun_mulai: string;
-    tahun_akhir: string;
+    periode: {
+      id: number;
+      tahun_mulai: string;
+      tahun_akhir: string;
+    };
     deskripsi: string;
     wilayah: {
       id: number;
@@ -42,8 +45,11 @@ export default class Klasifikasis extends Model {
     public rtrw: {
       id: number;
       name: string;
-      start_year: string;
-      end_year: string;
+      periode: {
+        id: number;
+        year_start: string;
+        year_end: string;
+      };
       desc: string;
       region: {
         id: number;
@@ -66,8 +72,11 @@ export default class Klasifikasis extends Model {
       {
         id: apiData.rtrw.id,
         name: apiData.rtrw.nama,
-        start_year: apiData.rtrw.tahun_mulai,
-        end_year: apiData.rtrw.tahun_akhir,
+        periode: {
+          id: apiData.rtrw.periode.id,
+          year_start: apiData.rtrw.periode.tahun_mulai,
+          year_end: apiData.rtrw.periode.tahun_akhir
+        },
         desc: apiData.rtrw.deskripsi,
         region: {
           id: apiData.rtrw.wilayah.id,

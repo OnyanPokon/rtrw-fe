@@ -75,11 +75,92 @@ export const formFields = ({ options }) => [
       {
         label: (
           <div className="inline-flex items-center gap-x-2">
-            <div className="h-4 w-4 bg-yellow-500"></div>
-            <span>#fffff</span>
+            <div className="h-4 w-4 bg-[#FF0000]"></div>
+            <span>#FF0000</span>
           </div>
         ),
-        value: '#ffff'
+        value: '#FF0000'
+      },
+      {
+        label: (
+          <div className="inline-flex items-center gap-x-2">
+            <div className="h-4 w-4 bg-[#00FF00]"></div>
+            <span>#00FF00</span>
+          </div>
+        ),
+        value: '#00FF00'
+      },
+      {
+        label: (
+          <div className="inline-flex items-center gap-x-2">
+            <div className="h-4 w-4 bg-[#0000FF]"></div>
+            <span>#0000FF</span>
+          </div>
+        ),
+        value: '#0000FF'
+      },
+      {
+        label: (
+          <div className="inline-flex items-center gap-x-2">
+            <div className="h-4 w-4 bg-[#FFFF00]"></div>
+            <span>#FFFF00</span>
+          </div>
+        ),
+        value: '#FFFF00'
+      },
+      {
+        label: (
+          <div className="inline-flex items-center gap-x-2">
+            <div className="h-4 w-4 bg-[#FF00FF]"></div>
+            <span>#FF00FF</span>
+          </div>
+        ),
+        value: '#FF00FF'
+      },
+      {
+        label: (
+          <div className="inline-flex items-center gap-x-2">
+            <div className="h-4 w-4 bg-[#00FFFF]"></div>
+            <span>#00FFFF</span>
+          </div>
+        ),
+        value: '#00FFFF'
+      },
+      {
+        label: (
+          <div className="inline-flex items-center gap-x-2">
+            <div className="h-4 w-4 bg-[#FFA500]"></div>
+            <span>#FFA500</span>
+          </div>
+        ),
+        value: '#FFA500'
+      },
+      {
+        label: (
+          <div className="inline-flex items-center gap-x-2">
+            <div className="h-4 w-4 bg-[#800080]"></div>
+            <span>#800080</span>
+          </div>
+        ),
+        value: '#800080'
+      },
+      {
+        label: (
+          <div className="inline-flex items-center gap-x-2">
+            <div className="h-4 w-4 bg-[#008080]"></div>
+            <span>#008080</span>
+          </div>
+        ),
+        value: '#008080'
+      },
+      {
+        label: (
+          <div className="inline-flex items-center gap-x-2">
+            <div className="h-4 w-4 bg-[#000000]"></div>
+            <span>#000000</span>
+          </div>
+        ),
+        value: '#000000'
       }
     ]
   }

@@ -14,8 +14,11 @@ export interface IncomingApiData {
     rtrw: {
       id: number;
       nama: string;
-      tahun_mulai: string;
-      tahun_akhir: string;
+      periode: {
+        id: number;
+        tahun_mulai: string;
+        tahun_akhir: string;
+      };
       deskripsi: string;
       wilayah: {
         id: number;
@@ -59,8 +62,11 @@ export default class Polaruangs extends Model {
       rtrw: {
         id: number;
         name: string;
-        start_year: string;
-        end_year: string;
+        periode: {
+          id: number;
+          year_start: string;
+          year_end: string;
+        };
         desc: string;
         region: {
           id: number;
@@ -89,8 +95,11 @@ export default class Polaruangs extends Model {
         rtrw: {
           id: apiData.klasifikasi.rtrw.id,
           name: apiData.klasifikasi.rtrw.nama,
-          start_year: apiData.klasifikasi.rtrw.tahun_mulai,
-          end_year: apiData.klasifikasi.rtrw.tahun_akhir,
+          periode: {
+            id: apiData.klasifikasi.rtrw.periode.id,
+            year_start: apiData.klasifikasi.rtrw.periode.tahun_mulai,
+            year_end: apiData.klasifikasi.rtrw.periode.tahun_akhir
+          },
           desc: apiData.klasifikasi.rtrw.deskripsi,
           region: {
             id: apiData.klasifikasi.rtrw.wilayah.id,

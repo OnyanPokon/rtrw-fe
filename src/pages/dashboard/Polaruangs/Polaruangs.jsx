@@ -4,7 +4,7 @@ import { useAuth, useCrudModal, useNotification, usePagination, useService } fro
 import { KlasifikasisService, PolaruangsService } from '@/services';
 import { Card, Skeleton, Space } from 'antd';
 import React from 'react';
-import { Delete, Edit } from '@/components/dashboard/button';
+import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import Modul from '@/constants/Modul';
 import { formFields } from './FormFields';
 import { Polaruangs as PolaruangModel } from '@/models';
@@ -88,6 +88,42 @@ const Polaruangs = () => {
               });
             }}
           />
+          <Detail
+            title={`Detail ${Modul.POLARUANG}`}
+            model={PolaruangModel}
+            onClick={() => {
+              modal.show.description({
+                title: record.name,
+                data: [
+                  {
+                    key: 'name',
+                    label: `Nama Polaruang`,
+                    children: record.name
+                  },
+                  {
+                    key: 'desc',
+                    label: `Deskripsi`,
+                    children: record.desc
+                  },
+                  {
+                    key: 'name',
+                    label: `Nama Klasifikasi`,
+                    children: record.klasifikasi.name
+                  },
+                  {
+                    key: 'desc',
+                    label: `Deskripsi Klasifikasi`,
+                    children: record.klasifikasi.desc
+                  },
+                  {
+                    key: 'type',
+                    label: `Tipe Klasifikasi`,
+                    children: record.klasifikasi.type
+                  }
+                ]
+              });
+            }}
+          />
           <Delete
             title={`Delete ${Modul.POLARUANG}`}
             model={PolaruangModel}
@@ -95,7 +131,6 @@ const Polaruangs = () => {
               modal.delete.default({
                 title: `Delete ${Modul.POLARUANG}`,
                 data: record,
-                formFields: formFields,
                 onSubmit: async () => {
                   const { isSuccess, message } = await deletePolaruang.execute(record.id, token);
                   if (isSuccess) {
