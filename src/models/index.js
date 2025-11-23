@@ -8,3 +8,6 @@ export { default as Polaruangs } from './Polaruangs';
 export { default as Periodes } from './Periodes';
 export { default as DasarHukums } from './DasarHukums';
 export { default as StrukturRuangs } from './StrukturRuangs';
+export { default as KetentuanKhusus } from './KetentuanKhusus';
+export { default as Pkkprl } from './Pkkprl';
+export { default as IndikasiProgram } from './IndikasiProgram';

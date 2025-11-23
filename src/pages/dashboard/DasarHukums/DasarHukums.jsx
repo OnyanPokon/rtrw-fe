@@ -65,13 +65,28 @@ const DasarHukums = () => {
                 data: record,
                 formFields: formFields,
                 onSubmit: async (values) => {
-                  const { message, isSuccess } = await updateDasarHukum.execute(record.id, { ...values, _method: 'PUT' }, token, values.doc.file);
+                  const isFileUpdated = values.doc?.file instanceof File;
+
+                  const payload = {
+                    ...values,
+                    _method: 'PUT'
+                  };
+
+                  if (!isFileUpdated) {
+                    delete payload.doc;
+                  }
+
+                  const fileToSend = isFileUpdated ? values.doc.file : null;
+
+                  const { message, isSuccess } = await updateDasarHukum.execute(record.id, payload, token, fileToSend);
+
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchDasarHukums({ token: token, page: pagination.page, per_page: pagination.per_page });
+                    fetchDasarHukums({ token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
+
                   return isSuccess;
                 }
               });

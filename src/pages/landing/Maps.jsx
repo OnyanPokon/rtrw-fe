@@ -21,6 +21,9 @@ const Maps = () => {
   const [loadingLayers, setLoadingLayers] = React.useState({});
   const [treePolaRuangData, setTreePolaRuangData] = React.useState([]);
   const [treeStrukturRuangData, setTreeStrukturRuangData] = React.useState([]);
+  const [treeKetentuanKhususData, setTreeKetentuanKhususData] = React.useState([]);
+  const [treePkkprlData, setTreePkkprlData] = React.useState([]);
+  const [treeIndikasiProgramData, setTreeIndikasiProgramData] = React.useState([]);
 
   const fetchRtrws = React.useCallback(() => {
     execute({ page: 1, per_page: 100000 });
@@ -50,6 +53,8 @@ const Maps = () => {
       let url = '';
       if (type === 'pola') url = `${BASE_URL}/polaruang/${id}/geojson`;
       else if (type === 'struktur') url = `${BASE_URL}/struktur_ruang/${id}/geojson`;
+      else if (type === 'ketentuan_khusus') url = `${BASE_URL}/ketentuan_khusus/${id}/geojson`;
+      else if (type === 'pkkprl') url = `${BASE_URL}/pkkprl/${id}/geojson`;
 
       const res = await fetch(url);
       const json = await res.json();
@@ -97,11 +102,12 @@ const Maps = () => {
     return data.map((klasifikasi) => ({
       title: klasifikasi.nama,
       key: `pola-root-${klasifikasi.id}`,
+      ...klasifikasi,
       children: (klasifikasi.pola_ruang || []).map((pola) => ({
         ...pola,
         type: 'pola',
         title: pola.nama,
-        key: `pola-${pola.id}`, // ← Unik
+        key: `pola-${pola.id}`,
         geojson_file: asset(pola.geojson_file),
         isLeaf: true
       }))
@@ -112,12 +118,60 @@ const Maps = () => {
     return data.map((klasifikasi) => ({
       title: klasifikasi.nama,
       key: `struktur-root-${klasifikasi.id}`,
+      ...klasifikasi,
       children: (klasifikasi.struktur_ruang || []).map((struktur) => ({
         ...struktur,
         type: 'struktur',
         title: struktur.nama,
         key: `struktur-${struktur.id}`,
         geojson_file: asset(struktur.geojson_file),
+        isLeaf: true
+      }))
+    }));
+  }
+
+  function mapKetentuanKhusus(data) {
+    return data.map((klasifikasi) => ({
+      title: klasifikasi.nama,
+      key: `ketentuan_khusus-root-${klasifikasi.id}`,
+      ...klasifikasi,
+      children: (klasifikasi.ketentuan_khusus || []).map((ketentuan_khusus) => ({
+        ...ketentuan_khusus,
+        type: 'ketentuan_khusus',
+        title: ketentuan_khusus.nama,
+        key: `ketentuan_khusus-${ketentuan_khusus.id}`,
+        geojson_file: asset(ketentuan_khusus.geojson_file),
+        isLeaf: true
+      }))
+    }));
+  }
+
+  function mapPkkprl(data) {
+    return data.map((klasifikasi) => ({
+      title: klasifikasi.nama,
+      key: `pkkprl-root-${klasifikasi.id}`,
+      ...klasifikasi,
+      children: (klasifikasi.pkkprl || []).map((pkkprl) => ({
+        ...pkkprl,
+        type: 'pkkprl',
+        title: pkkprl.nama,
+        key: `pkkprl-${pkkprl.id}`,
+        geojson_file: asset(pkkprl.geojson_file),
+        isLeaf: true
+      }))
+    }));
+  }
+
+  function mapIndikasiProgram(data) {
+    return data.map((klasifikasi) => ({
+      title: klasifikasi.nama,
+      key: `indikasi_program-root-${klasifikasi.id}`,
+      ...klasifikasi,
+      children: (klasifikasi.indikasi_program || []).map((indikasi_program) => ({
+        ...indikasi_program,
+        type: 'indikasi_program',
+        title: indikasi_program.nama,
+        key: `indikasi_program-${indikasi_program.id}`,
         isLeaf: true
       }))
     }));
@@ -133,9 +187,15 @@ const Maps = () => {
 
       const pola_ruang_list = data.klasifikasi_pola_ruang ?? [];
       const struktur_ruang_list = data.klasifikasi_struktur_ruang ?? [];
+      const ketentuan_khusus_list = data.klasifikasi_ketentuan_khusus ?? [];
+      const pkkprl_list = data.klasifikasi_pkkprl ?? [];
+      const indikasi_program_list = data.klasifikasi_indikasi_program ?? [];
 
       setTreePolaRuangData(mapPolaRuang(pola_ruang_list));
       setTreeStrukturRuangData(mapStrukturRuang(struktur_ruang_list));
+      setTreeKetentuanKhususData(mapKetentuanKhusus(ketentuan_khusus_list));
+      setTreePkkprlData(mapPkkprl(pkkprl_list));
+      setTreeIndikasiProgramData(mapIndikasiProgram(indikasi_program_list));
     } else {
       error('Gagal', message);
     }
@@ -287,7 +347,7 @@ const Maps = () => {
                             <div className="flex items-center justify-center rounded-md bg-blue-100 p-3">
                               <AimOutlined className="text-blue-500" />
                             </div>
-                            {item.title}
+                            {item.title} {`(${item.tipe === 'pola_ruang' ? 'Pola Ruang' : ''})`}
                           </div>
                           <MenuOutlined />
                         </div>
@@ -341,7 +401,7 @@ const Maps = () => {
                             <div className="flex items-center justify-center rounded-md bg-blue-100 p-3">
                               <AimOutlined className="text-blue-500" />
                             </div>
-                            {item.title}
+                            {item.title} {`(${item.tipe === 'struktur_ruang' ? 'Struktur Ruang' : ''})`}
                           </div>
                           <MenuOutlined />
                         </div>
@@ -378,6 +438,156 @@ const Maps = () => {
                               }}
                             />
                           </Checkbox>
+                        ))}
+                      </div>
+                    </Collapse.Panel>
+                  </Collapse>
+                </div>
+              </div>
+            ))}
+            {treeKetentuanKhususData.map((item) => (
+              <div key={item.key} className="flex flex-col gap-y-2">
+                <div className="mt-2 flex flex-col gap-y-4">
+                  <Collapse ghost expandIcon={() => ''}>
+                    <Collapse.Panel
+                      header={
+                        <div className="inline-flex w-full items-center justify-between">
+                          <div className="inline-flex w-full items-center gap-x-4">
+                            <div className="flex items-center justify-center rounded-md bg-blue-100 p-3">
+                              <AimOutlined className="text-blue-500" />
+                            </div>
+                            {item.title} {`(${item.tipe === 'ketentuan_khusus' ? 'Ketentuan Khusus' : ''})`}
+                          </div>
+                          <MenuOutlined />
+                        </div>
+                      }
+                    >
+                      <div className="flex flex-col gap-y-2 px-4">
+                        {item.children.map((pemetaan) => (
+                          <Checkbox key={pemetaan.key} onChange={() => handleToggleLayer(pemetaan)}>
+                            <span className="inline-flex items-center gap-x-2">
+                              {pemetaan.title}
+
+                              {loadingLayers[pemetaan.key] && <span className="h-3 w-3 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></span>}
+                            </span>
+
+                            <Button
+                              icon={<InfoCircleOutlined />}
+                              type="link"
+                              onClick={() => {
+                                modal.show.description({
+                                  title: pemetaan.nama,
+                                  data: [
+                                    {
+                                      key: 'name',
+                                      label: `Nama Struktur Ruang`,
+                                      children: pemetaan.nama
+                                    },
+                                    {
+                                      key: 'desc',
+                                      label: `Deskripsi`,
+                                      children: pemetaan.deskripsi
+                                    }
+                                  ]
+                                });
+                              }}
+                            />
+                          </Checkbox>
+                        ))}
+                      </div>
+                    </Collapse.Panel>
+                  </Collapse>
+                </div>
+              </div>
+            ))}
+            {treePkkprlData.map((item) => (
+              <div key={item.key} className="flex flex-col gap-y-2">
+                <div className="mt-2 flex flex-col gap-y-4">
+                  <Collapse ghost expandIcon={() => ''}>
+                    <Collapse.Panel
+                      header={
+                        <div className="inline-flex w-full items-center justify-between">
+                          <div className="inline-flex w-full items-center gap-x-4">
+                            <div className="flex items-center justify-center rounded-md bg-blue-100 p-3">
+                              <AimOutlined className="text-blue-500" />
+                            </div>
+                            {item.title} {`(${item.tipe === 'pkkprl' ? 'PKKPRL' : ''})`}
+                          </div>
+                          <MenuOutlined />
+                        </div>
+                      }
+                    >
+                      <div className="flex flex-col gap-y-2 px-4">
+                        {item.children.map((pemetaan) => (
+                          <Checkbox key={pemetaan.key} onChange={() => handleToggleLayer(pemetaan)}>
+                            <span className="inline-flex items-center gap-x-2">
+                              {pemetaan.title}
+
+                              {loadingLayers[pemetaan.key] && <span className="h-3 w-3 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></span>}
+                            </span>
+
+                            <Button
+                              icon={<InfoCircleOutlined />}
+                              type="link"
+                              onClick={() => {
+                                modal.show.description({
+                                  title: pemetaan.nama,
+                                  data: [
+                                    {
+                                      key: 'name',
+                                      label: `Nama Struktur Ruang`,
+                                      children: pemetaan.nama
+                                    },
+                                    {
+                                      key: 'desc',
+                                      label: `Deskripsi`,
+                                      children: pemetaan.deskripsi
+                                    }
+                                  ]
+                                });
+                              }}
+                            />
+                          </Checkbox>
+                        ))}
+                      </div>
+                    </Collapse.Panel>
+                  </Collapse>
+                </div>
+              </div>
+            ))}
+            {treeIndikasiProgramData.map((item) => (
+              <div key={item.key} className="flex flex-col gap-y-2">
+                <div className="mt-2 flex flex-col gap-y-4">
+                  <Collapse ghost expandIcon={() => ''}>
+                    <Collapse.Panel
+                      header={
+                        <div className="inline-flex w-full items-center justify-between">
+                          <div className="inline-flex w-full items-center gap-x-4">
+                            <div className="flex items-center justify-center rounded-md bg-blue-100 p-3">
+                              <AimOutlined className="text-blue-500" />
+                            </div>
+                            {item.title} {`(${item.tipe === 'indikasi_program' ? 'Indikasi Program' : ''})`}
+                          </div>
+                          <MenuOutlined />
+                        </div>
+                      }
+                    >
+                      <div className="flex flex-col gap-y-2 px-4">
+                        {item.children.map((pemetaan) => (
+                          <div key={pemetaan.key} className="inline-flex w-full items-center gap-x-2">
+                            <span>{pemetaan.title}</span>
+                            <Button
+                              icon={<InfoCircleOutlined />}
+                              type="link"
+                              onClick={() => {
+                                modal.show.paragraph({
+                                  data: {
+                                    content: <iframe className="min-h-96 w-full" src={asset(pemetaan.file_dokumen)} />
+                                  }
+                                });
+                              }}
+                            />
+                          </div>
                         ))}
                       </div>
                     </Collapse.Panel>

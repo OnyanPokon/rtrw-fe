@@ -91,6 +91,6 @@ export default class RtrwsService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/rtrw/multi-delete/?id=${ids.join(',')}`, { token });
+    return await api.delete(`/rtrw/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }

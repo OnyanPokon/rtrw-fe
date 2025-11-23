@@ -60,7 +60,10 @@ export const dashboardLink = [
     children: [
       { path: '/dashboard/klasifikasi', label: 'Klasifikasi', element: Dashboard.Klasifikasi, permissions: [[Action.READ, Model.Klasifikasis]] },
       { path: '/dashboard/polaruang', label: 'Polaruang', element: Dashboard.Polaruang, permissions: [[Action.READ, Model.Polaruangs]] },
-      { path: '/dashboard/struktur_ruang', label: 'Struktur Ruang', element: Dashboard.StrukturRuang }
+      { path: '/dashboard/struktur_ruang', label: 'Struktur Ruang', element: Dashboard.StrukturRuang },
+      { path: '/dashboard/ketentuan_khusus', label: 'Ketentuan Khusus', element: Dashboard.KetentuanKhusus },
+      { path: '/dashboard/pkkprl', label: 'PKKPRL', element: Dashboard.Pkkprl },
+      { path: '/dashboard/indikasi_program', label: 'Indikasi Program', element: Dashboard.IndikasiPrograms }
     ]
   }
 ].map((item) => ({

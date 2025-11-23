@@ -71,6 +71,6 @@ export default class PolaruangsService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/polaruang/multi-delete/?id=${ids.join(',')}`, { token });
+    return await api.delete(`/polaruang/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }

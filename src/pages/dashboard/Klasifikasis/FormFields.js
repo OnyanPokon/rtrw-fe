@@ -61,6 +61,18 @@ export const formFields = ({ options }) => [
       {
         label: 'Struktur Ruang',
         value: 'struktur_ruang'
+      },
+      {
+        label: 'Ketentuan Khusus',
+        value: 'ketentuan_khusus'
+      },
+      {
+        label: 'Indikasi Program',
+        value: 'indikasi_program'
+      },
+      {
+        label: 'PKKPRL',
+        value: 'pkkprl'
       }
     ]
   }

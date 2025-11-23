@@ -14,7 +14,7 @@ export default class StrukturRuangsService {
    * */
   static async getAll({ token, ...filters }) {
     const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
-    const response = await api.get('/struktur_ruang', { token });
+    const response = await api.get('/struktur_ruang', { token, params });
     if (!response.data) return response;
     return { ...response, data: StrukturRuangs.fromApiData(response.data) };
   }
@@ -44,8 +44,8 @@ export default class StrukturRuangsService {
    *  errors?: { [key: string]: string[] };
    * }>}
    */
-  static async update(id, data, token) {
-    return await api.post(`/struktur_ruang/${id}`, { body: StrukturRuangs.toApiData(data), token });
+  static async update(id, data, token, file) {
+    return await api.post(`/struktur_ruang/${id}`, { body: StrukturRuangs.toApiData(data), token, file: { geojson_file: file } });
   }
 
   /**
@@ -71,6 +71,6 @@ export default class StrukturRuangsService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/struktur_ruang/multi-delete/?id=${ids.join(',')}`, { token });
+    return await api.delete(`/struktur_ruang/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }

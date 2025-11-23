@@ -1,26 +1,26 @@
 /* eslint-disable no-unused-vars */
-import { Periodes } from '@/models';
+import { IndikasiProgram } from '@/models';
 import api from '@/utils/api';
 
-export default class PeriodesService {
+export default class IndikasiProgramService {
   /**
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
    *  status: boolean;
    *  message: string;
-   *  data?: Periodes[];
+   *  data?: IndikasiProgram[];
    * }>}
    * */
   static async getAll({ token, ...filters }) {
     const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
-    const response = await api.get('/periode', { token });
+    const response = await api.get('/indikasi_program', { token, params });
     if (!response.data) return response;
-    return { ...response, data: Periodes.fromApiData(response.data) };
+    return { ...response, data: IndikasiProgram.fromApiData(response.data) };
   }
 
   /**
-   * @param {Periodes} data
+   * @param {DasarHukums} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -29,13 +29,13 @@ export default class PeriodesService {
    *  errors?: { [key: string]: string[] };
    * }}
    */
-  static async store(data, token) {
-    return await api.post('/periode', { body: Periodes.toApiData(data), token });
+  static async store(data, token, file) {
+    return await api.post('/indikasi_program', { body: IndikasiProgram.toApiData(data), token, file: { file_dokumen: file } });
   }
 
   /**
    * @param {number} id
-   * @param {Periodes} data
+   * @param {IndikasiProgram} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -44,8 +44,8 @@ export default class PeriodesService {
    *  errors?: { [key: string]: string[] };
    * }>}
    */
-  static async update(id, data, token) {
-    return await api.put(`/periode/${id}`, { body: Periodes.toApiData(data), token });
+  static async update(id, data, token, file) {
+    return await api.post(`/indikasi_program/${id}`, { body: IndikasiProgram.toApiData(data), token, file: { file_dokumen: file } });
   }
 
   /**
@@ -58,7 +58,7 @@ export default class PeriodesService {
    * }>}
    */
   static async delete(id, token) {
-    return await api.delete(`/periode/${id}`, { token });
+    return await api.delete(`/indikasi_program/${id}`, { token });
   }
 
   /**
@@ -71,6 +71,6 @@ export default class PeriodesService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/periode/multi-delete?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/indikasi_program/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }

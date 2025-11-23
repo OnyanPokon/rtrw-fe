@@ -71,6 +71,6 @@ export default class KlasifikasisService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/klasifikasi/multi-delete/?id=${ids.join(',')}`, { token });
+    return await api.delete(`/klasifikasi/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }

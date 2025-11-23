@@ -47,7 +47,7 @@ interface FormValue {
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
 
-export default class Polaruangs extends Model {
+export default class KetentuanKhusus extends Model {
   constructor(
     public id: number,
     public klasifikasi: {
@@ -79,9 +79,9 @@ export default class Polaruangs extends Model {
     super();
   }
 
-  public static fromApiData<T extends IncomingApiData | IncomingApiData[]>(apiData: T): ReturnType<T, IncomingApiData, Polaruangs> {
-    if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)) as ReturnType<T, IncomingApiData, Polaruangs>;
-    return new Polaruangs(
+  public static fromApiData<T extends IncomingApiData | IncomingApiData[]>(apiData: T): ReturnType<T, IncomingApiData, KetentuanKhusus> {
+    if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)) as ReturnType<T, IncomingApiData, KetentuanKhusus>;
+    return new KetentuanKhusus(
       apiData.id,
       {
         id: apiData.klasifikasi.id,
@@ -108,21 +108,21 @@ export default class Polaruangs extends Model {
       apiData.nama,
       apiData.deskripsi,
       apiData.geojson_file
-    ) as ReturnType<T, IncomingApiData, Polaruangs>;
+    ) as ReturnType<T, IncomingApiData, KetentuanKhusus>;
   }
 
-  public static toApiData<T extends FormValue | FormValue[]>(polaruangs: T): ReturnType<T, FormValue, OutgoingApiData> {
-    if (Array.isArray(polaruangs)) return polaruangs.map((object) => this.toApiData(object)) as ReturnType<T, FormValue, OutgoingApiData>;
+  public static toApiData<T extends FormValue | FormValue[]>(ketentuanKhusus: T): ReturnType<T, FormValue, OutgoingApiData> {
+    if (Array.isArray(ketentuanKhusus)) return ketentuanKhusus.map((object) => this.toApiData(object)) as ReturnType<T, FormValue, OutgoingApiData>;
     const apiData: OutgoingApiData = {
-      ...(polaruangs._method ? { _method: polaruangs._method } : {}),
-      nama: polaruangs.name,
-      deskripsi: polaruangs.desc,
-      klasifikasi_id: polaruangs.id_klasifikasi,
-      geojson_file: polaruangs.geojson_file
+      ...(ketentuanKhusus._method ? { _method: ketentuanKhusus._method } : {}),
+      nama: ketentuanKhusus.name,
+      deskripsi: ketentuanKhusus.desc,
+      klasifikasi_id: ketentuanKhusus.id_klasifikasi,
+      geojson_file: ketentuanKhusus.geojson_file
     };
 
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;
   }
 }
 
-Model.children.polaruang = Polaruangs;
+Model.children.ketentuan_khusus = KetentuanKhusus;

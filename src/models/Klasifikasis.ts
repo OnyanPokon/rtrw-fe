@@ -20,21 +20,21 @@ export interface IncomingApiData {
   };
   nama: string;
   deskripsi: string;
-  tipe: 'pola_ruang' | 'struktur_ruang';
+  tipe: 'pola_ruang' | 'struktur_ruang' | 'ketentuan_khusus' | 'pkkprl' | 'indikasi_program';
 }
 
 export interface OutgoingApiData {
   nama: string;
   deskripsi: string;
   rtrw_id: number;
-  tipe: 'pola_ruang' | 'struktur_ruang';
+  tipe: 'pola_ruang' | 'struktur_ruang' | 'ketentuan_khusus' | 'pkkprl' | 'indikasi_program';
 }
 
 interface FormValue {
   name: string;
   desc: string;
   rtrw_id: number;
-  type: 'pola_ruang' | 'struktur_ruang';
+  type: 'pola_ruang' | 'struktur_ruang' | 'ketentuan_khusus' | 'pkkprl' | 'indikasi_program';
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -60,7 +60,7 @@ export default class Klasifikasis extends Model {
     },
     public name: string,
     public desc: string,
-    public type: 'pola_ruang' | 'struktur_ruang'
+    public type: 'pola_ruang' | 'struktur_ruang' | 'ketentuan_khusus' | 'pkkprl' | 'indikasi_program'
   ) {
     super();
   }

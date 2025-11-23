@@ -1,3 +1,4 @@
+import asset from '@/utils/asset';
 import Model from './Model';
 
 export interface IncomingApiData {
@@ -25,29 +26,26 @@ export interface IncomingApiData {
     };
   };
   nama: string;
-  deskripsi: string;
-  geojson_file: string;
+  file_dokumen: string;
 }
 
 export interface OutgoingApiData {
   _method?: 'PUT';
   nama: string;
-  deskripsi: string;
-  geojson_file: string;
+  file_dokumen: string;
   klasifikasi_id: string;
 }
 
 interface FormValue {
   _method?: 'PUT';
-  name: string;
-  desc: string;
-  geojson_file: string;
   id_klasifikasi: string;
+  name: string;
+  doc: string;
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
 
-export default class Polaruangs extends Model {
+export default class IndikasiProgram extends Model {
   constructor(
     public id: number,
     public klasifikasi: {
@@ -73,15 +71,14 @@ export default class Polaruangs extends Model {
       };
     },
     public name: string,
-    public desc: string,
-    public geojson_file: string
+    public doc: string
   ) {
     super();
   }
 
-  public static fromApiData<T extends IncomingApiData | IncomingApiData[]>(apiData: T): ReturnType<T, IncomingApiData, Polaruangs> {
-    if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)) as ReturnType<T, IncomingApiData, Polaruangs>;
-    return new Polaruangs(
+  public static fromApiData<T extends IncomingApiData | IncomingApiData[]>(apiData: T): ReturnType<T, IncomingApiData, IndikasiProgram> {
+    if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)) as ReturnType<T, IncomingApiData, IndikasiProgram>;
+    return new IndikasiProgram(
       apiData.id,
       {
         id: apiData.klasifikasi.id,
@@ -106,23 +103,22 @@ export default class Polaruangs extends Model {
         }
       },
       apiData.nama,
-      apiData.deskripsi,
-      apiData.geojson_file
-    ) as ReturnType<T, IncomingApiData, Polaruangs>;
+      asset(apiData.file_dokumen)
+    ) as ReturnType<T, IncomingApiData, IndikasiProgram>;
   }
 
-  public static toApiData<T extends FormValue | FormValue[]>(polaruangs: T): ReturnType<T, FormValue, OutgoingApiData> {
-    if (Array.isArray(polaruangs)) return polaruangs.map((object) => this.toApiData(object)) as ReturnType<T, FormValue, OutgoingApiData>;
+  public static toApiData<T extends FormValue | FormValue[]>(indikasiProgram: T): ReturnType<T, FormValue, OutgoingApiData> {
+    if (Array.isArray(indikasiProgram)) return indikasiProgram.map((object) => this.toApiData(object)) as ReturnType<T, FormValue, OutgoingApiData>;
     const apiData: OutgoingApiData = {
-      ...(polaruangs._method ? { _method: polaruangs._method } : {}),
-      nama: polaruangs.name,
-      deskripsi: polaruangs.desc,
-      klasifikasi_id: polaruangs.id_klasifikasi,
-      geojson_file: polaruangs.geojson_file
+      ...(indikasiProgram._method ? { _method: indikasiProgram._method } : {}),
+      nama: indikasiProgram.name,
+      file_dokumen: indikasiProgram.doc,
+      klasifikasi_id: indikasiProgram.id_klasifikasi
     };
 
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;
   }
 }
 
-Model.children.polaruang = Polaruangs;
+// FIXME: you maybe want to change below line. If you don't want to then delete this FIXME line
+Model.children.indikasi_program = IndikasiProgram;

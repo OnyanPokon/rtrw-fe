@@ -102,8 +102,22 @@ const StrukturRuangs = () => {
                   id_klasifikasi: record.klasifikasi.id
                 },
                 formFields: fields,
+
                 onSubmit: async (values) => {
-                  const { message, isSuccess } = await updateStrukturRuang.execute(record.id, { ...values, _method: 'PUT' }, token, values.geojson_file?.file);
+                  const isFileUpdated = values.geojson_file?.file instanceof File;
+
+                  const payload = {
+                    ...values,
+                    _method: 'PUT'
+                  };
+
+                  if (!isFileUpdated) {
+                    delete payload.geojson_file;
+                  }
+
+                  const fileToSend = isFileUpdated ? values.geojson_file.file : null;
+
+                  const { message, isSuccess } = await updateStrukturRuang.execute(record.id, payload, token, fileToSend);
 
                   if (isSuccess) {
                     success('Berhasil', message);
@@ -115,6 +129,7 @@ const StrukturRuangs = () => {
                   } else {
                     error('Gagal', message);
                   }
+
                   return isSuccess;
                 }
               });

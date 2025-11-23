@@ -165,8 +165,14 @@ const Klasifikasis = () => {
             onClick={() => {
               if (record.type === 'pola_ruang') {
                 navigate('/dashboard/polaruang/' + record.id);
-              } else {
+              } else if (record.type === 'struktur_ruang') {
                 navigate('/dashboard/struktur_ruang/' + record.id);
+              } else if (record.type === 'ketentuan_khusus') {
+                navigate('/dashboard/ketentuan_khusus/' + record.id);
+              } else if (record.type === 'pkkprl') {
+                navigate('/dashboard/ketentuan_khusus/' + record.id);
+              } else if (record.type === 'indikasi_program') {
+                navigate('/dashboard/indikasi_program/' + record.id);
               }
             }}
           />

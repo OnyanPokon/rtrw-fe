@@ -1,4 +1,8 @@
+import { DatatableColumn, FormField as FormFieldType, Override } from '@/types';
+import strings from '@/utils/strings';
+import { DescriptionsItemType } from 'antd/es/descriptions';
 import Model from './Model';
+import { InputType } from '@/constants';
 
 export interface IncomingApiData {
   id: number;
@@ -47,7 +51,7 @@ interface FormValue {
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
 
-export default class Polaruangs extends Model {
+export default class Pkkprl extends Model {
   constructor(
     public id: number,
     public klasifikasi: {
@@ -79,9 +83,9 @@ export default class Polaruangs extends Model {
     super();
   }
 
-  public static fromApiData<T extends IncomingApiData | IncomingApiData[]>(apiData: T): ReturnType<T, IncomingApiData, Polaruangs> {
-    if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)) as ReturnType<T, IncomingApiData, Polaruangs>;
-    return new Polaruangs(
+  public static fromApiData<T extends IncomingApiData | IncomingApiData[]>(apiData: T): ReturnType<T, IncomingApiData, Pkkprl> {
+    if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)) as ReturnType<T, IncomingApiData, Pkkprl>;
+    return new Pkkprl(
       apiData.id,
       {
         id: apiData.klasifikasi.id,
@@ -108,21 +112,21 @@ export default class Polaruangs extends Model {
       apiData.nama,
       apiData.deskripsi,
       apiData.geojson_file
-    ) as ReturnType<T, IncomingApiData, Polaruangs>;
+    ) as ReturnType<T, IncomingApiData, Pkkprl>;
   }
 
-  public static toApiData<T extends FormValue | FormValue[]>(polaruangs: T): ReturnType<T, FormValue, OutgoingApiData> {
-    if (Array.isArray(polaruangs)) return polaruangs.map((object) => this.toApiData(object)) as ReturnType<T, FormValue, OutgoingApiData>;
+  public static toApiData<T extends FormValue | FormValue[]>(pkkprl: T): ReturnType<T, FormValue, OutgoingApiData> {
+    if (Array.isArray(pkkprl)) return pkkprl.map((object) => this.toApiData(object)) as ReturnType<T, FormValue, OutgoingApiData>;
     const apiData: OutgoingApiData = {
-      ...(polaruangs._method ? { _method: polaruangs._method } : {}),
-      nama: polaruangs.name,
-      deskripsi: polaruangs.desc,
-      klasifikasi_id: polaruangs.id_klasifikasi,
-      geojson_file: polaruangs.geojson_file
+      ...(pkkprl._method ? { _method: pkkprl._method } : {}),
+      nama: pkkprl.name,
+      deskripsi: pkkprl.desc,
+      klasifikasi_id: pkkprl.id_klasifikasi,
+      geojson_file: pkkprl.geojson_file
     };
 
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;
   }
 }
 
-Model.children.polaruang = Polaruangs;
+Model.children.pkkprl = Pkkprl;

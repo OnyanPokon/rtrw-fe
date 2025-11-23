@@ -7,7 +7,7 @@ import { RouterProvider } from 'react-router';
 import './index.css';
 import { flattenLandingLinks } from './utils/landingLink';
 import { Notfound } from './pages/result';
-import { Polaruang, StrukturRuang } from './pages/dashboard';
+import { IndikasiPrograms, KetentuanKhusus, Pkkprl, Polaruang, StrukturRuang } from './pages/dashboard';
 
 function App() {
   const { isLoading, user } = useAuth();
@@ -59,7 +59,10 @@ function App() {
               })
             ),
             { path: '/dashboard/polaruang/:klasifikasi_id', element: <Polaruang /> },
-            { path: '/dashboard/struktur_ruang/:klasifikasi_id', element: <StrukturRuang /> }
+            { path: '/dashboard/struktur_ruang/:klasifikasi_id', element: <StrukturRuang /> },
+            { path: '/dashboard/ketentuan_khusus/:klasifikasi_id', element: <KetentuanKhusus /> },
+            { path: '/dashboard/pkkprl/:klasifikasi_id', element: <Pkkprl /> },
+            { path: '/dashboard/indikasi_program/:klasifikasi_id', element: <IndikasiPrograms /> }
           ]
         },
         {

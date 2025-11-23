@@ -71,6 +71,6 @@ export default class RegionsService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/wilayah/multi-delete/?id=${ids.join(',')}`, { token });
+    return await api.delete(`/wilayah/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }
