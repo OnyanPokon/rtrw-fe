@@ -11,12 +11,6 @@ export interface IncomingApiData {
       tahun_akhir: string;
     };
     deskripsi: string;
-    wilayah: {
-      id: number;
-      nama: string;
-      tipe: string;
-      kode_wilayah: string;
-    };
   };
   nama: string;
   deskripsi: string;
@@ -51,12 +45,6 @@ export default class Klasifikasis extends Model {
         year_end: string;
       };
       desc: string;
-      region: {
-        id: number;
-        name: string;
-        type: string;
-        region_code: string;
-      };
     },
     public name: string,
     public desc: string,
@@ -77,13 +65,7 @@ export default class Klasifikasis extends Model {
           year_start: apiData.rtrw.periode.tahun_mulai,
           year_end: apiData.rtrw.periode.tahun_akhir
         },
-        desc: apiData.rtrw.deskripsi,
-        region: {
-          id: apiData.rtrw.wilayah.id,
-          name: apiData.rtrw.wilayah.nama,
-          type: apiData.rtrw.wilayah.tipe,
-          region_code: apiData.rtrw.wilayah.kode_wilayah
-        }
+        desc: apiData.rtrw.deskripsi
       },
       apiData.nama,
       apiData.deskripsi,

@@ -7,7 +7,8 @@ import { RouterProvider } from 'react-router';
 import './index.css';
 import { flattenLandingLinks } from './utils/landingLink';
 import { Notfound } from './pages/result';
-import { IndikasiPrograms, KetentuanKhusus, Pkkprl, Polaruang, StrukturRuang } from './pages/dashboard';
+import { CreateNews, EditNews, IndikasiPrograms, KetentuanKhusus, Pkkprl, Polaruang, StrukturRuang } from './pages/dashboard';
+import { ReadNews } from './pages/landing';
 
 function App() {
   const { isLoading, user } = useAuth();
@@ -25,7 +26,8 @@ function App() {
               element: <Element />
             })),
 
-            { path: '*', element: <Notfound /> }
+            { path: '*', element: <Notfound /> },
+            { path: '/berita/:slug', element: <ReadNews /> }
           ]
         },
         {
@@ -62,7 +64,9 @@ function App() {
             { path: '/dashboard/struktur_ruang/:klasifikasi_id', element: <StrukturRuang /> },
             { path: '/dashboard/ketentuan_khusus/:klasifikasi_id', element: <KetentuanKhusus /> },
             { path: '/dashboard/pkkprl/:klasifikasi_id', element: <Pkkprl /> },
-            { path: '/dashboard/indikasi_program/:klasifikasi_id', element: <IndikasiPrograms /> }
+            { path: '/dashboard/indikasi_program/:klasifikasi_id', element: <IndikasiPrograms /> },
+            { path: '/dashboard/berita/create', element: <CreateNews /> },
+            { path: '/dashboard/berita/edit/:slug', element: <EditNews /> }
           ]
         },
         {

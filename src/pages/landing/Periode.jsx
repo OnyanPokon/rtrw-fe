@@ -1,5 +1,5 @@
 import { Layout, Table, Button, Typography, Skeleton } from 'antd';
-import { DownloadOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import { EnvironmentOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/organisms/Navbar';
 import Footer from '@/components/organisms/Footer';
@@ -39,23 +39,6 @@ const PeriodePage = () => {
           </div>
           <div className="mt-1 text-sm font-normal text-gray-500">{countYearLeft(record.periode.year_start, record.periode.year_end)} Tahun</div>
         </div>
-      )
-    },
-    {
-      title: 'Dasar Hukum',
-      render: (_, record) => (
-        <div>
-          <div className="font-medium text-gray-700">{record.dasar_hukum.name}</div>
-        </div>
-      )
-    },
-    {
-      title: 'Download PDF',
-      render: (_, record) => (
-        <Button type="primary" icon={<DownloadOutlined />} onClick={() => window.open(record.dasar_hukum.doc, '_blank')} className="border-0 bg-gradient-to-r from-primary-600 to-primary-700 shadow-md hover:shadow-lg">
-          <span className="hidden sm:inline">Unduh PDF</span>
-          <span className="sm:hidden">PDF</span>
-        </Button>
       )
     },
     {

@@ -1,26 +1,48 @@
 /* eslint-disable no-unused-vars */
-import { DasarHukums } from '@/models';
+import { News } from '@/models';
 import api from '@/utils/api';
 
-export default class DasarHukumsService {
+export default class NewsService {
   /**
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
    *  status: boolean;
    *  message: string;
-   *  data?: DasarHukums[];
+   *  data?: News[];
    * }>}
    * */
   static async getAll({ token, ...filters }) {
     const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
-    const response = await api.get('/dasar_hukum', { token, params });
+    const response = await api.get('/berita', { token, params });
     if (!response.data) return response;
-    return { ...response, data: DasarHukums.fromApiData(response.data) };
+    return { ...response, data: News.fromApiData(response.data) };
   }
 
   /**
-   * @param {DasarHukums} data
+   * @param {string} token
+   * @returns {Promise<{
+   *  code: HTTPStatusCode;
+   *  status: boolean;
+   *  message: string;
+   *  data?: News[];
+   * }>}
+   * */
+  static async getAllLanding({ ...filters }) {
+    const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
+    const response = await api.get('/landing/berita', { params });
+    if (!response.data) return response;
+    return { ...response, data: News.fromApiData(response.data) };
+  }
+
+  static async getBySlug({ slug }) {
+    const response = await api.get(`/landing/berita/${slug}`);
+    if (!response.data) return response;
+    return { ...response, data: News.fromApiData(response.data) };
+  }
+
+  /**
+   * @param {News} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -30,12 +52,12 @@ export default class DasarHukumsService {
    * }}
    */
   static async store(data, token, file) {
-    return await api.post('/dasar_hukum', { body: DasarHukums.toApiData(data), token, file: { file_dokumen: file } });
+    return await api.post('/berita', { body: News.toApiData(data), token, file: { thumbnail: file } });
   }
 
   /**
    * @param {number} id
-   * @param {DasarHukums} data
+   * @param {News} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -45,7 +67,7 @@ export default class DasarHukumsService {
    * }>}
    */
   static async update(id, data, token, file) {
-    return await api.post(`/dasar_hukum/${id}`, { body: DasarHukums.toApiData(data), token, file: { file_dokumen: file } });
+    return await api.post(`/berita/${id}`, { body: News.toApiData(data), token, file: { thumbnail: file } });
   }
 
   /**
@@ -58,7 +80,7 @@ export default class DasarHukumsService {
    * }>}
    */
   static async delete(id, token) {
-    return await api.delete(`/dasar_hukum/${id}`, { token });
+    return await api.delete(`/berita/${id}`, { token });
   }
 
   /**
@@ -71,6 +93,6 @@ export default class DasarHukumsService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/dasar_hukum/multi-delete?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/berita/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }

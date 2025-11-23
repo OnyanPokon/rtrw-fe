@@ -20,6 +20,11 @@ export const landingLink = [
     label: 'Map',
     key: '/map',
     element: Landing.Maps
+  },
+  {
+    label: 'Berita',
+    key: '/berita',
+    element: Landing.News
   }
 ];
 
@@ -48,9 +53,8 @@ export const dashboardLink = [
     label: 'Data RTRW',
     icon: FileDoneOutlined,
     children: [
-      { path: '/dashboard/region', label: 'Wilayah', element: Dashboard.Regions, permissions: [[Action.READ, Model.Regions]] },
       { path: '/dashboard/periode', label: 'Periode', element: Dashboard.Periode, permissions: [[Action.READ, Model.Rtrws]] },
-      { path: '/dashboard/dasar_hukum', label: 'Dasar Hukum', element: Dashboard.DasarHukum, permissions: [[Action.READ, Model.Rtrws]] },
+
       { path: '/dashboard/rtrw', label: 'RTRW', element: Dashboard.Rtrws, permissions: [[Action.READ, Model.Rtrws]] }
     ]
   },
@@ -63,7 +67,8 @@ export const dashboardLink = [
       { path: '/dashboard/struktur_ruang', label: 'Struktur Ruang', element: Dashboard.StrukturRuang },
       { path: '/dashboard/ketentuan_khusus', label: 'Ketentuan Khusus', element: Dashboard.KetentuanKhusus },
       { path: '/dashboard/pkkprl', label: 'PKKPRL', element: Dashboard.Pkkprl },
-      { path: '/dashboard/indikasi_program', label: 'Indikasi Program', element: Dashboard.IndikasiPrograms }
+      { path: '/dashboard/indikasi_program', label: 'Indikasi Program', element: Dashboard.IndikasiPrograms },
+      { path: '/dashboard/berita', label: 'Berita', element: Dashboard.News }
     ]
   }
 ].map((item) => ({

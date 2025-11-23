@@ -1,14 +1,13 @@
 import { DataTable, DataTableHeader } from '@/components';
 import { Action } from '@/constants';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
-import { DasarHukumsService, PeriodesService, RegionsService, RtrwsService } from '@/services';
-import { Button, Card, Skeleton, Space } from 'antd';
+import { PeriodesService, RtrwsService } from '@/services';
+import { Card, Skeleton, Space } from 'antd';
 import { Rtrws as RtrwModel } from '@/models';
 import React from 'react';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import Modul from '@/constants/Modul';
 import { formFields } from './FormFields';
-import { DownloadOutlined } from '@ant-design/icons';
 
 const { UPDATE, READ, DELETE } = Action;
 
@@ -17,9 +16,7 @@ const Rtrws = () => {
   const modal = useCrudModal();
   const { success, error } = useNotification();
   const { execute, ...getAllRtrws } = useService(RtrwsService.getAll);
-  const { execute: fetchRegions, ...getAllRegions } = useService(RegionsService.getAll);
   const { execute: fetchPeriodes, ...getAllPeriodes } = useService(PeriodesService.getAll);
-  const { execute: fetchDasarHukums, ...getAllDasarHukums } = useService(DasarHukumsService.getAll);
   const storeRtrw = useService(RtrwsService.store);
   const updateRtrw = useService(RtrwsService.update);
   const deleteRtrw = useService(RtrwsService.delete);
@@ -28,7 +25,7 @@ const Rtrws = () => {
 
   const pagination = usePagination({ totalData: getAllRtrws.totalData });
 
-  const [selectedRegions, setSelectedRegions] = React.useState([]);
+  const [selectedRtrws, setSelectedRtrws] = React.useState([]);
 
   const fetchRtrws = React.useCallback(() => {
     execute({
@@ -40,15 +37,11 @@ const Rtrws = () => {
 
   React.useEffect(() => {
     fetchRtrws();
-    fetchRegions({ token: token });
-    fetchDasarHukums({ token: token });
     fetchPeriodes({ token: token });
-  }, [fetchDasarHukums, fetchPeriodes, fetchRegions, fetchRtrws, pagination.page, pagination.per_page, token]);
+  }, [fetchPeriodes, fetchRtrws, pagination.page, pagination.per_page, token]);
 
   const rtrws = getAllRtrws.data ?? [];
-  const regions = getAllRegions.data ?? [];
   const periodes = getAllPeriodes.data ?? [];
-  const dasarHukums = getAllDasarHukums.data ?? [];
 
   const column = [
     {
@@ -82,8 +75,8 @@ const Rtrws = () => {
             onClick={() => {
               modal.edit({
                 title: `Edit ${Modul.RTRW}`,
-                data: { ...record, region_id: record.region.id, periode_id: record.periode.id, dasar_hukum_id: record.dasar_hukum.id },
-                formFields: formFields({ options: { regions, periodes, dasarHukums } }),
+                data: { ...record, periode_id: record.periode.id },
+                formFields: formFields({ options: { periodes } }),
                 onSubmit: async (values) => {
                   const { message, isSuccess } = await updateRtrw.execute(record.id, values, token);
                   if (isSuccess) {
@@ -119,24 +112,11 @@ const Rtrws = () => {
                     label: `Tahun Akhir`,
                     children: record.periode.year_end
                   },
-                  {
-                    key: 'wilayah',
-                    label: `Nama Wilayah`,
-                    children: record.region.name
-                  },
+
                   {
                     key: 'deskripsi',
                     label: `Deskripsi`,
                     children: record.desc
-                  },
-                  {
-                    key: 'file_dokumen',
-                    label: `File Dokumen RTRW`,
-                    children: (
-                      <Button icon={<DownloadOutlined />} onClick={() => window.open(record.dasar_hukum.doc, '_blank')}>
-                        Download
-                      </Button>
-                    )
                   }
                 ]
               });
@@ -169,7 +149,7 @@ const Rtrws = () => {
   const onCreate = () => {
     modal.create({
       title: `Tambah ${Modul.RTRW}`,
-      formFields: formFields({ options: { regions, periodes, dasarHukums } }),
+      formFields: formFields({ options: { periodes } }),
       onSubmit: async (values) => {
         const { message, isSuccess } = await storeRtrw.execute(values, token);
         if (isSuccess) {
@@ -185,14 +165,13 @@ const Rtrws = () => {
 
   const onDeleteBatch = () => {
     modal.delete.batch({
-      title: `Hapus ${selectedRegions.length} ${Modul.RTRW} Yang Dipilih ? `,
+      title: `Hapus ${selectedRtrws.length} ${Modul.RTRW} Yang Dipilih ? `,
       onSubmit: async () => {
-        const ids = selectedRegions.map((item) => item.id);
+        const ids = selectedRtrws.map((item) => item.id);
         const { message, isSuccess } = await deleteBatchRtrws.execute(ids, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchRegions(token, pagination.page, pagination.per_page);
-          setSelectedRegions([]);
+          setSelectedRtrws([]);
         } else {
           error('Gagal', message);
         }
@@ -204,9 +183,9 @@ const Rtrws = () => {
   return (
     <Card>
       <Skeleton loading={getAllRtrws.isLoading}>
-        <DataTableHeader onStore={onCreate} modul={Modul.RTRW} onDeleteBatch={onDeleteBatch} selectedData={selectedRegions} onSearch={(values) => setFilterValues({ search: values })} model={RtrwModel} />
+        <DataTableHeader onStore={onCreate} modul={Modul.RTRW} onDeleteBatch={onDeleteBatch} selectedData={selectedRtrws} onSearch={(values) => setFilterValues({ search: values })} model={RtrwModel} />
         <div className="w-full max-w-full overflow-x-auto">
-          <DataTable data={rtrws} columns={column} loading={getAllRtrws.isLoading} map={(registrant) => ({ key: registrant.id, ...registrant })} pagination={pagination} handleSelectedData={(_, selectedRows) => setSelectedRegions(selectedRows)} />
+          <DataTable data={rtrws} columns={column} loading={getAllRtrws.isLoading} map={(registrant) => ({ key: registrant.id, ...registrant })} pagination={pagination} handleSelectedData={(_, selectedRows) => setSelectedRtrws(selectedRows)} />
         </div>
       </Skeleton>
     </Card>

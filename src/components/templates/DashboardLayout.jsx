@@ -19,11 +19,6 @@ const DashboardLayout = ({ children }) => {
       label: 'Dashboard'
     },
     {
-      key: '/dashboard/wilayah',
-      icon: <EnvironmentOutlined />,
-      label: 'Wilayah'
-    },
-    {
       key: '/dashboard/polaruang',
       icon: <AppstoreOutlined />,
       label: 'Pola Ruang'
