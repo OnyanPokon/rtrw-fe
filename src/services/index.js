@@ -8,3 +8,4 @@ export { default as KetentuanKhususService } from './KetentuanKhususService';
 export { default as PkkprlService } from './PkkprlService';
 export { default as IndikasiProgramService } from './IndikasiProgramService';
 export { default as NewsService } from './NewsService';
+export { default as DashboardService } from './DashboardService';
