@@ -1,8 +1,4 @@
-import { DatatableColumn, FormField as FormFieldType, Override } from '@/types';
-import strings from '@/utils/strings';
-import { DescriptionsItemType } from 'antd/es/descriptions';
 import Model from './Model';
-import { InputType } from '@/constants';
 
 export interface IncomingApiData {
   id: number;

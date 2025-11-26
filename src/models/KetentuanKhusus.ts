@@ -19,6 +19,7 @@ export interface IncomingApiData {
     };
   };
   nama: string;
+  warna: string;
   deskripsi: string;
   geojson_file: string;
 }
@@ -29,6 +30,7 @@ export interface OutgoingApiData {
   deskripsi: string;
   geojson_file: string;
   klasifikasi_id: string;
+  warna: string;
 }
 
 interface FormValue {
@@ -37,6 +39,7 @@ interface FormValue {
   desc: string;
   geojson_file: string;
   id_klasifikasi: string;
+  color: string;
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -61,6 +64,7 @@ export default class KetentuanKhusus extends Model {
       };
     },
     public name: string,
+    public color: string,
     public desc: string,
     public geojson_file: string
   ) {
@@ -88,6 +92,7 @@ export default class KetentuanKhusus extends Model {
         }
       },
       apiData.nama,
+      apiData.warna,
       apiData.deskripsi,
       apiData.geojson_file
     ) as ReturnType<T, IncomingApiData, KetentuanKhusus>;
@@ -100,7 +105,8 @@ export default class KetentuanKhusus extends Model {
       nama: ketentuanKhusus.name,
       deskripsi: ketentuanKhusus.desc,
       klasifikasi_id: ketentuanKhusus.id_klasifikasi,
-      geojson_file: ketentuanKhusus.geojson_file
+      geojson_file: ketentuanKhusus.geojson_file,
+      warna: ketentuanKhusus.color
     };
 
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;

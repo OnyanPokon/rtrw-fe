@@ -20,8 +20,6 @@ const Dashboard = () => {
 
   const summary = getAllSummary.data ?? [];
 
-  console.log(summary);
-
   return (
     <div className="grid w-full grid-cols-5 gap-x-2">
       <Card className="col-span-1">

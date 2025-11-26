@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useCrudModal, useNotification, useService } from '@/hooks';
 import { RtrwsService } from '@/services';
@@ -10,6 +11,7 @@ import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
 import L from 'leaflet';
 import { getLeafletIcon } from '@/utils/leafletIcon';
+import * as AntdIcons from '@ant-design/icons';
 
 const Maps = () => {
   const navigate = useNavigate();
@@ -71,8 +73,9 @@ const Maps = () => {
             props.stroke = warna;
             props['stroke-width'] = props['stroke-width'] ?? 3;
             props['stroke-opacity'] = props['stroke-opacity'] ?? 1;
-            props.fill = props.fill ?? warna;
-            props['fill-opacity'] = props['fill-opacity'] ?? 0.2;
+
+            props.fill = props.fill ?? warna; // <-- FILL POLYGON
+            props['fill-opacity'] = props['fill-opacity'] ?? 0.8;
           }
           if (tipe_garis === 'dashed') {
             props.dashArray = props.dashArray ?? '6 6';
@@ -209,8 +212,8 @@ const Maps = () => {
     const stroke = props.stroke || '#0000ff';
     const weight = props['stroke-width'] ?? 3;
     const opacity = props['stroke-opacity'] ?? 1;
-    const fillColor = props.fill ?? '#ffffff';
-    const fillOpacity = props['fill-opacity'] ?? 0.2;
+    const fillColor = props.fill;
+    const fillOpacity = props['fill-opacity'] ?? 0.8;
     const dashArray = props.dashArray || props['stroke-dasharray'] || null;
 
     const style = {
@@ -228,7 +231,7 @@ const Maps = () => {
 
   return (
     <section className="flex h-screen w-full">
-      <div className="h-full w-full flex-[3]">
+      <div className="relative h-full w-full flex-[3]">
         <MapContainer center={[0.5412, 123.0595]} zoom={9} className="h-screen w-full">
           <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           {Object.values(selectedLayers).map((layer) => (
@@ -263,6 +266,85 @@ const Maps = () => {
             />
           ))}
         </MapContainer>
+        <div className="absolute bottom-4 left-4 z-[1000]">
+          <div className="w-96 rounded-lg bg-white p-4 shadow-lg">
+            <h4 className="mb-2 font-semibold">Legend</h4>
+            {/* POLA RUANG */}
+            {Object.entries(selectedLayers).some(([key]) => key.startsWith('pola')) && (
+              <>
+                <div className="flex max-h-28 flex-wrap gap-2">
+                  <b className="w-full text-sm">Pola Ruang</b>
+
+                  {Object.entries(selectedLayers)
+                    .filter(([key]) => key.startsWith('pola'))
+                    .map(([_, item]) => (
+                      <div key={item.id} className="inline-flex items-center gap-x-1">
+                        <div className="h-2 w-5" style={{ backgroundColor: item.meta.warna }} />
+                        <small>{item.meta.nama}</small>
+                      </div>
+                    ))}
+                </div>
+                <hr className="my-2" />
+              </>
+            )}
+            {/* STRUKTUR RUANG */}
+            {Object.entries(selectedLayers).some(([key]) => key.startsWith('struktur')) && (
+              <>
+                <div className="flex max-h-28 flex-wrap gap-2">
+                  <b className="w-full text-sm">Struktur Ruang</b>
+
+                  {Object.entries(selectedLayers)
+                    .filter(([key]) => key.startsWith('struktur'))
+                    .map(([_, item]) => {
+                      const IconComponent = item.meta.icon_titik ? AntdIcons[item.meta.icon_titik] : null;
+                      return (
+                        <div key={item.id} className="inline-flex items-center gap-x-1">
+                          {IconComponent ? <IconComponent style={{ fontSize: 18, color: item.meta.warna }} /> : <div className="h-1 w-6" style={{ backgroundColor: item.meta.warna }} />}
+
+                          <small>{item.meta.nama}</small>
+                        </div>
+                      );
+                    })}
+                </div>
+                <hr className="my-2" />
+              </>
+            )}
+            {Object.entries(selectedLayers).some(([key]) => key.startsWith('ketentuan_khusus')) && (
+              <>
+                <div className="flex max-h-28 flex-wrap gap-2">
+                  <b className="w-full text-sm">Ketentuan Khusus</b>
+
+                  {Object.entries(selectedLayers)
+                    .filter(([key]) => key.startsWith('ketentuan_khusus'))
+                    .map(([_, item]) => (
+                      <div key={item.id} className="inline-flex items-center gap-x-1">
+                        <div className="h-2 w-5" style={{ backgroundColor: item.meta.warna }} />
+                        <small>{item.meta.nama}</small>
+                      </div>
+                    ))}
+                </div>
+                <hr className="my-2" />
+              </>
+            )}
+            {Object.entries(selectedLayers).some(([key]) => key.startsWith('pkkprl')) && (
+              <>
+                <div className="flex max-h-28 flex-wrap gap-2">
+                  <b className="w-full text-sm">PKKPRL</b>
+
+                  {Object.entries(selectedLayers)
+                    .filter(([key]) => key.startsWith('pkkprl'))
+                    .map(([_, item]) => (
+                      <div key={item.id} className="inline-flex items-center gap-x-1">
+                        <div className="h-2 w-5" style={{ backgroundColor: item.meta.warna }} />
+                        <small>{item.meta.nama}</small>
+                      </div>
+                    ))}
+                </div>
+                <hr className="my-2" />
+              </>
+            )}
+          </div>
+        </div>
       </div>
       <div className="flex h-full w-full flex-[1] flex-col gap-y-4 overflow-y-auto bg-white p-8">
         <div className="inline-flex items-center justify-between">

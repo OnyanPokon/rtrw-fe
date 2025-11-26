@@ -2,7 +2,7 @@ import { CrudModalType, InputType } from '@/constants';
 import clientAsset from '@/utils/clientAsset';
 import strings from '@/utils/strings';
 import { DeleteOutlined, InboxOutlined } from '@ant-design/icons';
-import { Button, DatePicker, Form, Input, InputNumber, Modal, Select as AntdSelect } from 'antd';
+import { Button, DatePicker, Form, Input, InputNumber, Modal, Select as AntdSelect, ColorPicker } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Dragger from 'antd/es/upload/Dragger';
 import PropTypes from 'prop-types';
@@ -93,6 +93,9 @@ export default function CrudModal({ isModalOpen, data: initialData, close, title
 
       case InputType.DATE:
         return <DatePicker className="w-full" size="large" placeholder={`Pilih ${field.label}`} readOnly={field.readOnly} {...field.extra} />;
+
+      case InputType.COLOR:
+        return <ColorPicker showText format="hex" size="large" readOnly={field.readOnly} {...field.extra} />;
 
       case InputType.UPLOAD:
         return (

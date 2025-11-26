@@ -2,7 +2,7 @@ import { DataTable, DataTableHeader } from '@/components';
 import { Action } from '@/constants';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { KlasifikasisService, KetentuanKhususService } from '@/services';
-import { Card, Skeleton, Space } from 'antd';
+import { Card, ColorPicker, Skeleton, Space } from 'antd';
 import React from 'react';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import Modul from '@/constants/Modul';
@@ -55,6 +55,13 @@ const KetentuanKhusus = () => {
       searchable: true
     },
     {
+      title: 'Warna',
+      dataIndex: 'color',
+      sorter: (a, b) => a.color.length - b.color.length,
+      searchable: true,
+      render: (record) => <ColorPicker value={record} showText disabled />
+    },
+    {
       title: 'Klasifikasi',
       dataIndex: ['klasifikasi', 'name'],
       sorter: (a, b) => a.klasifikasi.name.length - b.klasifikasi.name.length,
@@ -80,6 +87,7 @@ const KetentuanKhusus = () => {
 
                   const payload = {
                     ...values,
+                    color: values.color.toHexString(),
                     _method: 'PUT'
                   };
 
@@ -173,7 +181,7 @@ const KetentuanKhusus = () => {
       title: `Tambah ${Modul.KETENTUAN_KHUSUS}`,
       formFields: formFields({ options: { klasifikasi: klasifikasis } }),
       onSubmit: async (values) => {
-        const { message, isSuccess } = await storeKetentuanKhusus.execute(values, token, values.geojson_file.file);
+        const { message, isSuccess } = await storeKetentuanKhusus.execute({ ...values, color: values.color.toHexString() }, token, values.geojson_file.file);
         if (isSuccess) {
           success('Berhasil', message);
           fetchKetentuanKhusus({ token: token, page: pagination.page, per_page: pagination.per_page });

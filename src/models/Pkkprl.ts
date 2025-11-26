@@ -1,8 +1,4 @@
-import { DatatableColumn, FormField as FormFieldType, Override } from '@/types';
-import strings from '@/utils/strings';
-import { DescriptionsItemType } from 'antd/es/descriptions';
 import Model from './Model';
-import { InputType } from '@/constants';
 
 export interface IncomingApiData {
   id: number;
@@ -23,6 +19,7 @@ export interface IncomingApiData {
     };
   };
   nama: string;
+  warna: string;
   deskripsi: string;
   geojson_file: string;
 }
@@ -33,6 +30,7 @@ export interface OutgoingApiData {
   deskripsi: string;
   geojson_file: string;
   klasifikasi_id: string;
+  warna: string;
 }
 
 interface FormValue {
@@ -41,6 +39,7 @@ interface FormValue {
   desc: string;
   geojson_file: string;
   id_klasifikasi: string;
+  color: string;
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -65,6 +64,7 @@ export default class Pkkprl extends Model {
       };
     },
     public name: string,
+    public color: string,
     public desc: string,
     public geojson_file: string
   ) {
@@ -92,6 +92,7 @@ export default class Pkkprl extends Model {
         }
       },
       apiData.nama,
+      apiData.warna,
       apiData.deskripsi,
       apiData.geojson_file
     ) as ReturnType<T, IncomingApiData, Pkkprl>;
@@ -104,7 +105,8 @@ export default class Pkkprl extends Model {
       nama: pkkprl.name,
       deskripsi: pkkprl.desc,
       klasifikasi_id: pkkprl.id_klasifikasi,
-      geojson_file: pkkprl.geojson_file
+      geojson_file: pkkprl.geojson_file,
+      warna: pkkprl.color
     };
 
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;
