@@ -2,21 +2,18 @@ import { DataTable, DataTableHeader } from '@/components';
 import { Action } from '@/constants';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { KlasifikasisService, RtrwsService } from '@/services';
-import { Button, Card, Skeleton, Space } from 'antd';
+import { Card, Skeleton, Space } from 'antd';
 import { Klasifikasis as KlasifikasiModel } from '@/models';
 import React from 'react';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import Modul from '@/constants/Modul';
 import { formFields } from './FormFields';
-import { DatabaseOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
 
 const { UPDATE, READ, DELETE } = Action;
 
 const Klasifikasis = () => {
   const { token, user } = useAuth();
   const modal = useCrudModal();
-  const navigate = useNavigate();
   const { success, error } = useNotification();
   const { execute, ...getAllKlasifikasis } = useService(KlasifikasisService.getAll);
   const { execute: fetchRtrws, ...getAllRtrws } = useService(RtrwsService.getAll);
@@ -158,7 +155,7 @@ const Klasifikasis = () => {
             }}
           />
 
-          <Button
+          {/* <Button
             icon={<DatabaseOutlined />}
             variant="outlined"
             color="primary"
@@ -175,7 +172,7 @@ const Klasifikasis = () => {
                 navigate('/dashboard/indikasi_program/' + record.id);
               }
             }}
-          />
+          /> */}
         </Space>
       )
     });

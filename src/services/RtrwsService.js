@@ -65,7 +65,7 @@ export default class RtrwsService {
    * }>}
    */
   static async update(id, data, token) {
-    return await api.post(`/rtrw/${id}`, { body: Rtrws.toApiData(data), token });
+    return await api.put(`/rtrw/${id}`, { body: Rtrws.toApiData(data), token });
   }
 
   /**
